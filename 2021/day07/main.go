@@ -10,29 +10,23 @@ import (
 )
 
 func main() {
-	positions, err := LoadPositions("input")
+	positions, max, err := LoadPositions("input")
 	if err != nil {
 		log.Fatalln(err)
 	}
-	fmt.Println("1:", FindBest(positions, false))
-	fmt.Println("2:", FindBest(positions, true))
+	fmt.Println("1:", FindBest(positions, max, false))
+	fmt.Println("2:", FindBest(positions, max, true))
 }
 
-func FindBest(positions []int, fuelIncrease bool) int {
-	max := 0
-	for _, v := range positions {
-		if v > max {
-			max = v
-		}
-	}
+func FindBest(positions []int, max int, fuelIncrease bool) int {
 	best := math.MaxInt64
-	for goal := 0; goal < max; goal++ {
+	for meetPoint := 0; meetPoint < max; meetPoint++ {
 		cur := 0
-		for _, v := range positions {
+		for _, pos := range positions {
 			if !fuelIncrease {
-				cur += IntAbs(goal - v)
+				cur += IntAbs(meetPoint - pos)
 			} else {
-				cur += SumZeroToN(IntAbs(goal - v))
+				cur += SumZeroToN(IntAbs(meetPoint - pos))
 			}
 		}
 		if cur < best {
@@ -53,19 +47,23 @@ func SumZeroToN(n int) int {
 	return n * (n + 1) / 2
 }
 
-func LoadPositions(filename string) ([]int, error) {
+func LoadPositions(filename string) ([]int, int, error) {
 	content, err := ioutil.ReadFile(filename)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	trimcontent := bytes.TrimRight(content, "\n")
 	var positions []int
+	var max int
 	for _, l := range bytes.Split(trimcontent, []byte(",")) {
 		num, err := strconv.Atoi(string(l))
 		if err != nil {
-			return nil, err
+			return nil, 0, err
+		}
+		if num > max {
+			max = num
 		}
 		positions = append(positions, num)
 	}
-	return positions, nil
+	return positions, max, nil
 }
