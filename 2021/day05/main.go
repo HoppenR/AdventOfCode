@@ -16,7 +16,7 @@ func main() {
 	fmt.Println("2:", CountOverlap(segments, true))
 }
 
-func CountOverlap(segments map[string]int, useDiag bool) (ctr int) {
+func CountOverlap(segments map[int]int, useDiag bool) (ctr int) {
 	for _, v := range segments {
 		if !useDiag && (v%1000 >= 2) || useDiag && (v/1000+v%1000 >= 2) {
 			ctr++
@@ -25,14 +25,14 @@ func CountOverlap(segments map[string]int, useDiag bool) (ctr int) {
 	return
 }
 
-func ReadSegments(filename string) (map[string]int, error) {
+func ReadSegments(filename string) (map[int]int, error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return nil, err
 	}
 	defer file.Close()
 	scanner := bufio.NewScanner(file)
-	segments := make(map[string]int)
+	segments := make(map[int]int)
 	for scanner.Scan() {
 		var x1, y1, x2, y2, Δx, Δy int
 		_, err := fmt.Sscanf(scanner.Text(), "%d,%d -> %d,%d", &x1, &y1, &x2, &y2)
@@ -51,9 +51,9 @@ func ReadSegments(filename string) (map[string]int, error) {
 		}
 		for x, y := x1, y1; x != (x2+Δx) || y != (y2+Δy); x, y = x+Δx, y+Δy {
 			if Δx == 0 || Δy == 0 {
-				segments[fmt.Sprintf("%d,%d", x, y)] += 1
+				segments[x*1000+y] += 1
 			} else {
-				segments[fmt.Sprintf("%d,%d", x, y)] += 1000
+				segments[x*1000+y] += 1000
 			}
 		}
 	}
