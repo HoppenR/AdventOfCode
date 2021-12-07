@@ -10,9 +10,9 @@ var testPositions = []int{
 }
 
 func TestPart1(t *testing.T) {
-	assert.Equal(t, 37, FindBest(testPositions, false))
+	assert.Equal(t, 37, FindBest(testPositions, 16, false))
 }
 
 func TestPart2(t *testing.T) {
-	assert.Equal(t, 168, FindBest(testPositions, true))
+	assert.Equal(t, 168, FindBest(testPositions, 16, true))
 }
