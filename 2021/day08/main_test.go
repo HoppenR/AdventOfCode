@@ -7,44 +7,44 @@ import (
 
 var testPatterns = []SignalPattern{
 	{
-		input:  [10]string{"be", "cfbegad", "cbdgef", "fgaecd", "cgeb", "fdcge", "agebfd", "fecdb", "fabcd", "edb"},
-		output: [4]string{"fdgacbe", "cefdb", "cefbgd", "gcbe"},
+		in:  []int{0b10010, 0b1111111, 0b1111110, 0b1111101, 0b1010110, 0b1111100, 0b1111011, 0b111110, 0b101111, 0b11010},
+		out: []int{0b1111111, 0b111110, 0b1111110, 0b1010110},
 	},
 	{
-		input:  [10]string{"edbfga", "begcd", "cbg", "gc", "gcadebf", "fbgde", "acbgfd", "abcde", "gfcbed", "gfec"},
-		output: [4]string{"fcgedb", "cgb", "dgebacf", "gc"},
+		in:  []int{0b1111011, 0b1011110, 0b1000110, 0b1000100, 0b1111111, 0b1111010, 0b1101111, 0b11111, 0b1111110, 0b1110100},
+		out: []int{0b1111110, 0b1000110, 0b1111111, 0b1000100},
 	},
 	{
-		input:  [10]string{"fgaebd", "cg", "bdaec", "gdafb", "agbcfd", "gdcbef", "bgcad", "gfac", "gcb", "cdgabef"},
-		output: [4]string{"cg", "cg", "fdcagb", "cbg"},
+		in:  []int{0b1111011, 0b1000100, 0b11111, 0b1101011, 0b1101111, 0b1111110, 0b1001111, 0b1100101, 0b1000110, 0b1111111},
+		out: []int{0b1000100, 0b1000100, 0b1101111, 0b1000110},
 	},
 	{
-		input:  [10]string{"fbegcd", "cbd", "adcefb", "dageb", "afcb", "bc", "aefdc", "ecdab", "fgdeca", "fcdbega"},
-		output: [4]string{"efabcd", "cedba", "gadfec", "cb"},
+		in:  []int{0b1111110, 0b1110, 0b111111, 0b1011011, 0b100111, 0b110, 0b111101, 0b11111, 0b1111101, 0b1111111},
+		out: []int{0b111111, 0b11111, 0b1111101, 0b110},
 	},
 	{
-		input:  [10]string{"aecbfdg", "fbg", "gf", "bafeg", "dbefa", "fcge", "gcbea", "fcaegb", "dgceab", "fcbdga"},
-		output: [4]string{"gecf", "egdcabf", "bgf", "bfgea"},
+		in:  []int{0b1111111, 0b1100010, 0b1100000, 0b1110011, 0b111011, 0b1110100, 0b1010111, 0b1110111, 0b1011111, 0b1101111},
+		out: []int{0b1110100, 0b1111111, 0b1100010, 0b1110011},
 	},
 	{
-		input:  [10]string{"fgeab", "ca", "afcebg", "bdacfeg", "cfaedg", "gcfdb", "baec", "bfadeg", "bafgc", "acf"},
-		output: [4]string{"gebdcfa", "ecba", "ca", "fadegcb"},
+		in:  []int{0b1110011, 0b101, 0b1110111, 0b1111111, 0b1111101, 0b1101110, 0b10111, 0b1111011, 0b1100111, 0b100101},
+		out: []int{0b1111111, 0b10111, 0b101, 0b1111111},
 	},
 	{
-		input:  [10]string{"dbcfg", "fgd", "bdegcaf", "fgec", "aegbdf", "ecdfab", "fbedc", "dacgb", "gdcebf", "gf"},
-		output: [4]string{"cefg", "dcbef", "fcge", "gbcadfe"},
+		in:  []int{0b1101110, 0b1101000, 0b1111111, 0b1110100, 0b1111011, 0b111111, 0b111110, 0b1001111, 0b1111110, 0b1100000},
+		out: []int{0b1110100, 0b111110, 0b1110100, 0b1111111},
 	},
 	{
-		input:  [10]string{"bdfegc", "cbegaf", "gecbf", "dfcage", "bdacg", "ed", "bedf", "ced", "adcbefg", "gebcd"},
-		output: [4]string{"ed", "bcgafe", "cdgba", "cbgef"},
+		in:  []int{0b1111110, 0b1110111, 0b1110110, 0b1111101, 0b1001111, 0b11000, 0b111010, 0b11100, 0b1111111, 0b1011110},
+		out: []int{0b11000, 0b1110111, 0b1001111, 0b1110110},
 	},
 	{
-		input:  [10]string{"egadfb", "cdbfeg", "cegd", "fecab", "cgb", "gbdefca", "cg", "fgcdab", "egfdb", "bfceg"},
-		output: [4]string{"gbdfcae", "bgc", "cg", "cgb"},
+		in:  []int{0b1111011, 0b1111110, 0b1011100, 0b110111, 0b1000110, 0b1111111, 0b1000100, 0b1101111, 0b1111010, 0b1110110},
+		out: []int{0b1111111, 0b1000110, 0b1000100, 0b1000110},
 	},
 	{
-		input:  [10]string{"gcafb", "gcf", "dcaebfg", "ecagb", "gf", "abcdeg", "gaef", "cafbge", "fdbac", "fegbdc"},
-		output: [4]string{"fgae", "cfgab", "fg", "bagce"},
+		in:  []int{0b1100111, 0b1100100, 0b1111111, 0b1010111, 0b1100000, 0b1011111, 0b1110001, 0b1110111, 0b101111, 0b1111110},
+		out: []int{0b1110001, 0b1100111, 0b1100000, 0b1010111},
 	},
 }
 
@@ -53,4 +53,5 @@ func TestPart1(t *testing.T) {
 }
 
 func TestPart2(t *testing.T) {
+	assert.Equal(t, 61229, DecodeSignals(testPatterns))
 }
