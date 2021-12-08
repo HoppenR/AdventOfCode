@@ -87,7 +87,7 @@ Clicking a star takes you to the solution
  </tr>
  <tr>
   <td>8</td>
-  <td><a href=2021/day08>✴</a></td>
+  <td><a href=2021/day08>⭐</a></td>
   <td><a href=2020/day08>⭐</a></td>
   <td><a href=2019/day08>⭐</a></td>
   <td><a href=2018/day8>✴</a></td>
