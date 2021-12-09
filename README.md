@@ -97,7 +97,7 @@ Clicking a star takes you to the solution
  </tr>
  <tr>
   <td>9</td>
-  <td></td>
+  <td><a href=2021/day09>⭐</a></td>
   <td><a href=2020/day09>⭐</a></td>
   <td><a href=2019/day09>⭐</a></td>
   <td><a href=2018/day9>⭐</a></td>
