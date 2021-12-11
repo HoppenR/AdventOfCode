@@ -117,7 +117,7 @@ Clicking a star takes you to the solution
  </tr>
  <tr>
   <td>11</td>
-  <td></td>
+  <td><a href=2021/day11>⭐</a></td>
   <td><a href=2020/day11>⭐</a></td>
   <td><a href=2019/day11>⭐</a></td>
   <td><a href=2018/day11>⭐</a></td>
