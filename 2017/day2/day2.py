@@ -1,6 +1,5 @@
 from argparse import ArgumentParser
-from typing import Callable, List, Optional
-from math import gcd
+from typing import Callable, List
 
 def coprime(x: int, y: int) -> int:
     if y > x:
