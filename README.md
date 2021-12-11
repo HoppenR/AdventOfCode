@@ -41,7 +41,7 @@ Clicking a star takes you to the solution
   <td><a href=2020/day03>⭐</a></td>
   <td><a href=2019/day03>⭐</a></td>
   <td><a href=2018/day3>⭐</a></td>
-  <td><a href=2017/day3>✴</a></td>
+  <td><a href=2017/day3>⭐</a></td>
   <td></td>
   <td></td>
  </tr>
