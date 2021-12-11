@@ -159,7 +159,7 @@ Clicking a star takes you to the solution
   <td>15</td>
   <td></td>
   <td><a href=2020/day15>⭐</a></td>
-  <td><a href=2019/day15>⭐</a></td>
+  <td><a href=2019/day15>⭐</a>*</td>
   <td></td>
   <td></td>
   <td></td>
@@ -266,3 +266,5 @@ Clicking a star takes you to the solution
   <td></td>
  </tr>
 </table>
+
+<sup>*Requires manual inputs and is not solved automatically</sup>
