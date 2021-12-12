@@ -5,9 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"path/filepath"
 	"strings"
-	"unicode"
 )
 
 type Node struct {
@@ -20,22 +18,22 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	fmt.Println("1:", Traverse(startNode, "", true))
-	fmt.Println("2:", Traverse(startNode, "", false))
+	fmt.Println("1:", Traverse(startNode, nil, true))
+	fmt.Println("2:", Traverse(startNode, nil, false))
 }
 
-func Traverse(cNode *Node, state string, doubleVisited bool) (count int) {
+func Traverse(cNode *Node, state []string, doubleVisited bool) (count int) {
 	if cNode.name == "end" {
 		count++
 		return
 	}
-	state = filepath.Join(state, cNode.name)
+	state = append(state, cNode.name)
 	for _, nNode := range cNode.connected {
 		if nNode.name == "start" {
 			continue
 		}
-		if unicode.IsLower(rune(nNode.name[0])) {
-			if Occurrences(state, nNode.name) == 0 {
+		if nNode.name[0] >= 'a' {
+			if !Exists(state, nNode.name) {
 				count += Traverse(nNode, state, doubleVisited)
 			} else if !doubleVisited {
 				count += Traverse(nNode, state, true)
@@ -47,14 +45,13 @@ func Traverse(cNode *Node, state string, doubleVisited bool) (count int) {
 	return
 }
 
-func Occurrences(state, name string) (occ int) {
-	visitedNodeNames := strings.Split(state, string(filepath.Separator))
-	for _, vnn := range visitedNodeNames {
+func Exists(state []string, name string) bool {
+	for _, vnn := range state {
 		if vnn == name {
-			occ++
+			return true
 		}
 	}
-	return
+	return false
 }
 
 func ParseNodes(filename string) (*Node, error) {
