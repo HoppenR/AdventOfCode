@@ -31,9 +31,9 @@ func TestSetupNodes(t *testing.T) {
 }
 
 func TestPart1(t *testing.T) {
-	assert.Equal(t, 10, Traverse(start, "", true))
+	assert.Equal(t, 10, Traverse(start, nil, true))
 }
 
 func TestPart2(t *testing.T) {
-	assert.Equal(t, 36, Traverse(start, "", false))
+	assert.Equal(t, 36, Traverse(start, nil, false))
 }
