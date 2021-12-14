@@ -21,7 +21,7 @@ func FindIncrementsWindow(depths []int, window int) (increments int) {
 	lastMeasure := 0
 	for i := 0; i < len(depths)-window; i++ {
 		measure := 0
-		for j := i; j < i + window; j++ {
+		for j := i; j < i+window; j++ {
 			measure += depths[j]
 		}
 		if measure > lastMeasure {
@@ -39,17 +39,16 @@ func ReadDepths(filename string) ([]int, error) {
 	}
 	defer file.Close()
 	scanner := bufio.NewScanner(file)
-	expenses := make([]int, 0)
+	depths := make([]int, 0)
 	for scanner.Scan() {
-		payment, err := strconv.Atoi(scanner.Text())
+		depth, err := strconv.Atoi(scanner.Text())
 		if err != nil {
 			return nil, err
 		}
-		expenses = append(expenses, payment)
+		depths = append(depths, depth)
 	}
 	if err := scanner.Err(); err != nil {
 		return nil, err
 	}
-	return expenses, nil
+	return depths, nil
 }
-
