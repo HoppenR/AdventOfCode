@@ -157,7 +157,7 @@ Clicking a star takes you to the solution
  </tr>
  <tr>
   <td>15</td>
-  <td></td>
+  <td><a href=2021/day15>✴</a></td>
   <td><a href=2020/day15>⭐</a></td>
   <td><a href=2019/day15>⭐</a>*</td>
   <td></td>
