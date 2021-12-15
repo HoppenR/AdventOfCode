@@ -34,4 +34,5 @@ func TestPart1(t *testing.T) {
 }
 
 func TestPart2(t *testing.T) {
+	assert.Equal(t, 315, ShortestPath(ScaleMap(testCosts, 5)))
 }
