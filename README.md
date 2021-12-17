@@ -167,7 +167,7 @@ Clicking a star takes you to the solution
  </tr>
  <tr>
   <td>16</td>
-  <td></td>
+  <td><a href=2021/day16>⭐</a></td>
   <td><a href=2020/day16>⭐</a></td>
   <td><a href=2019/day16>✴</a></td>
   <td></td>
