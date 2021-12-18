@@ -177,7 +177,7 @@ Clicking a star takes you to the solution
  </tr>
  <tr>
   <td>17</td>
-  <td></td>
+  <td><a href=2021/day17>⭐</a></td>
   <td><a href=2020/day17>⭐</a></td>
   <td><a href=2019/day17>✴</a></td>
   <td></td>
