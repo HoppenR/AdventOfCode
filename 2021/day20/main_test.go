@@ -14,23 +14,27 @@ var testAlgo = `..#.#..#####.#.#.#.###.##.....###.##.#..###.####..#####..#....#.
 	`...#.....####.#..#..#.##.#....##..#.####....##...##..#...#......#.#.......#` +
 	`.......##..####..#...#.#.#...##..#.#..###..#####........#..####......#..#`
 
-var testImage = map[Pixel]struct{}{
-	{0, 0}: {},
-	{3, 0}: {},
-	{0, 1}: {},
-	{0, 2}: {},
-	{1, 2}: {},
-	{4, 2}: {},
-	{2, 3}: {},
-	{2, 4}: {},
-	{3, 4}: {},
-	{4, 4}: {},
+var testImage = &Image{
+	pixels: map[Pixel]struct{}{
+		{0, 0}: {},
+		{3, 0}: {},
+		{0, 1}: {},
+		{0, 2}: {},
+		{1, 2}: {},
+		{4, 2}: {},
+		{2, 3}: {},
+		{2, 4}: {},
+		{3, 4}: {},
+		{4, 4}: {},
+	},
+	max:  4,
+	algo: testAlgo,
 }
 
 func TestPart1(t *testing.T) {
-	assert.Equal(t, 35, Enhance(testAlgo, testImage, 2))
+	assert.Equal(t, 35, Enhance(testImage, 2))
 }
 
 func TestPart2(t *testing.T) {
-	assert.Equal(t, 3351, Enhance(testAlgo, testImage, 50))
+	assert.Equal(t, 3351, Enhance(testImage, 50-2))
 }
