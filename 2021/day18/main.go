@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"math"
 	"os"
 )
 
@@ -25,24 +24,19 @@ type Node struct {
 	parent *Node
 }
 
-type NodeDepth struct {
-	node  *Node
-	depth int
-}
-
 func main() {
 	data, err := ReadFile("input")
 	if err != nil {
 		log.Fatalln(err)
 	}
-	fmt.Println("1:", Magnitude(Solve(GenGraphs(data))))
+	fmt.Println("1:", Magnitude(Solve(data)))
 	fmt.Println("2:", LargestAddition(data))
 }
 
-func Solve(rootNodes []*Node) *Node {
-	result := rootNodes[0]
-	for _, node := range rootNodes[1:] {
-		result = Reduce(Add(result, node))
+func Solve(data [][]byte) *Node {
+	result := DataToGraph(data[0])
+	for i := 1; i < len(data); i++ {
+		result = Reduce(Add(result, DataToGraph(data[i])))
 	}
 	return result
 }
@@ -54,7 +48,7 @@ func LargestAddition(data [][]byte) int {
 			if i == j {
 				continue
 			}
-			number := Magnitude(Reduce(Add(DataToGraph(data[i]), DataToGraph(data[j]))))
+			number := Magnitude(Solve([][]byte{data[i], data[j]}))
 			if number > largest {
 				largest = number
 			}
@@ -71,58 +65,32 @@ func Magnitude(node *Node) (sum int) {
 }
 
 func Reduce(root *Node) *Node {
-loop:
-	if ExplodeNext(root) {
-		goto loop
-	}
-	if SplitNext(root) {
-		goto loop
+	for ExplodeNext(root, 0) || SplitNext(root) {
+		continue
 	}
 	return root
 }
 
-// Explodes the leftmost item with 4 or higher depth
-// Returns true if it exploded something
-func ExplodeNext(root *Node) bool {
-	var todo []NodeDepth
-	todo = append(todo, NodeDepth{root, 0})
-	for len(todo) > 0 {
-		ix := len(todo) - 1
-		curNode := todo[ix].node
-		curDepth := todo[ix].depth
-		for curNode.t == t_node {
-			if curDepth >= 4 {
-				Explode(curNode)
-				return true
-			}
-			curDepth++
-			todo = append(todo, NodeDepth{curNode.right, curDepth})
-			curNode = curNode.left
-		}
-		todo = append(todo[:ix], todo[ix+1:]...)
+func ExplodeNext(node *Node, depth int) bool {
+	if node.t != t_node {
+		return false
 	}
-	return false
+	if depth >= 4 {
+		Explode(node)
+		return true
+	}
+	return ExplodeNext(node.left, depth+1) || ExplodeNext(node.right, depth+1)
 }
 
-// Splits the leftmost item with 10 or higher value
-// Returns true if it split something
-func SplitNext(root *Node) bool {
-	var todo []*Node
-	todo = append(todo, root)
-	for len(todo) > 0 {
-		ix := len(todo) - 1
-		curNode := todo[ix]
-		for curNode != nil {
-			if curNode.t == t_value && curNode.value >= 10 {
-				Split(curNode)
-				return true
-			}
-			todo = append(todo, curNode.right)
-			curNode = curNode.left
+func SplitNext(node *Node) bool {
+	if node.t == t_value {
+		if node.value >= 10 {
+			Split(node)
+			return true
 		}
-		todo = append(todo[:ix], todo[ix+1:]...)
+		return false
 	}
-	return false
+	return SplitNext(node.left) || SplitNext(node.right)
 }
 
 func Explode(node *Node) {
@@ -142,32 +110,32 @@ func Explode(node *Node) {
 
 func Split(node *Node) {
 	node.t = t_node
-	val := float64(node.value) / 2.0
-	node.value = 0
 	node.left = &Node{
 		t:      t_value,
-		value:  int(math.Floor(val)),
+		value:  node.value / 2,
 		pos:    pos_left,
 		parent: node,
 	}
 	node.right = &Node{
 		t:      t_value,
-		value:  int(math.Ceil(val)),
+		value:  (node.value + 1) / 2,
 		pos:    pos_right,
 		parent: node,
 	}
+	node.value = 0
 }
 
 func LeftAdjacent(node *Node) *Node {
-	isLeft := true
-	for isLeft {
-		isLeft = (node.pos == pos_left)
+	for {
 		if node.parent == nil {
 			return nil
 		}
+		if node.pos != pos_left {
+			break
+		}
 		node = node.parent
 	}
-	node = node.left
+	node = node.parent.left
 	for node.t != t_value {
 		node = node.right
 	}
@@ -175,15 +143,16 @@ func LeftAdjacent(node *Node) *Node {
 }
 
 func RightAdjacent(node *Node) *Node {
-	isRight := true
-	for isRight {
-		isRight = (node.pos == pos_right)
+	for {
 		if node.parent == nil {
 			return nil
 		}
+		if node.pos != pos_right {
+			break
+		}
 		node = node.parent
 	}
-	node = node.right
+	node = node.parent.right
 	for node.t != t_value {
 		node = node.left
 	}
@@ -199,14 +168,6 @@ func Add(lhs, rhs *Node) *Node {
 	return this
 }
 
-func GenGraphs(data [][]byte) []*Node {
-	var rootNodes []*Node
-	for _, line := range data {
-		rootNodes = append(rootNodes, DataToGraph(line))
-	}
-	return rootNodes
-}
-
 func DataToGraph(data []byte) *Node {
 	buffer := bytes.NewBuffer(data)
 	return ParseNode(buffer)
@@ -214,27 +175,25 @@ func DataToGraph(data []byte) *Node {
 
 func ParseNode(buffer *bytes.Buffer) *Node {
 	var node Node
-	for {
-		nextByte, _ := buffer.ReadByte()
-		switch nextByte {
-		case '[':
-			node.t = t_node
-			left := ParseNode(buffer)
-			left.parent = &node
-			left.pos = pos_left
-			node.left = left
-			_, _ = buffer.ReadByte() // Consume ','
-			right := ParseNode(buffer)
-			right.parent = &node
-			right.pos = pos_right
-			node.right = right
-			_, _ = buffer.ReadByte() // Consume ']'
-			return &node
-		default:
-			node.t = t_value
-			node.value = int(nextByte - '0')
-			return &node
-		}
+	nextByte, _ := buffer.ReadByte()
+	switch nextByte {
+	case '[':
+		node.t = t_node
+		left := ParseNode(buffer)
+		left.parent = &node
+		left.pos = pos_left
+		node.left = left
+		_, _ = buffer.ReadByte() // Consume ','
+		right := ParseNode(buffer)
+		right.parent = &node
+		right.pos = pos_right
+		node.right = right
+		_, _ = buffer.ReadByte() // Consume ']'
+		return &node
+	default:
+		node.t = t_value
+		node.value = int(nextByte - '0')
+		return &node
 	}
 }
 
