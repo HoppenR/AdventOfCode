@@ -11,14 +11,7 @@ func GraphStr(node *Node) (ret string) {
 	if node.t == t_value {
 		return fmt.Sprint(node.value)
 	}
-	if node.t == t_node {
-		ret += "["
-		ret += GraphStr(node.left)
-		ret += ","
-		ret += GraphStr(node.right)
-		ret += "]"
-	}
-	return
+	return "[" + GraphStr(node.left) + "," + GraphStr(node.right) + "]"
 }
 
 var testReduce = map[string][]byte{
@@ -81,7 +74,7 @@ func TestPart1(t *testing.T) {
 		assert.Equal(t, ans, GraphStr(Reduce(DataToGraph(data))))
 	}
 	for ans, data := range testSolve {
-		assert.Equal(t, ans, GraphStr(Solve(GenGraphs(data))))
+		assert.Equal(t, ans, GraphStr(Solve(data)))
 	}
 	for ans, data := range testMagnitude {
 		assert.Equal(t, ans, Magnitude(DataToGraph(data)))
