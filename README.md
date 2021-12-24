@@ -187,7 +187,7 @@ Clicking a star takes you to the solution
  </tr>
  <tr>
   <td>18</td>
-  <td></td>
+  <td><a href=2021/day18>⭐</a></td>
   <td><a href=2020/day18>⭐</a></td>
   <td></td>
   <td></td>
