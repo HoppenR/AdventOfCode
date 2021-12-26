@@ -97,5 +97,8 @@ func GetImageWithAlgo(filename string) (*Image, error) {
 			}
 		}
 	}
+	if err := scanner.Err(); err != nil {
+		return nil, err
+	}
 	return image, nil
 }
