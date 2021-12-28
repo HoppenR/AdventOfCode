@@ -217,7 +217,7 @@ Clicking a star takes you to the solution
  </tr>
  <tr>
   <td>21</td>
-  <td></td>
+  <td><a href=2021/day21>⭐</a></td>
   <td><a href=2020/day21>⭐</a></td>
   <td></td>
   <td></td>
