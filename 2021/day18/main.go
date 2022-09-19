@@ -42,7 +42,7 @@ func Solve(data [][]byte) *Node {
 }
 
 func LargestAddition(data [][]byte) int {
-	largest := 0
+	var largest int
 	for i := range data {
 		for j := range data {
 			if i == j {
@@ -168,8 +168,8 @@ func Add(lhs, rhs *Node) *Node {
 	return this
 }
 
-func DataToGraph(data []byte) *Node {
-	buffer := bytes.NewBuffer(data)
+func DataToGraph(datum []byte) *Node {
+	buffer := bytes.NewBuffer(datum)
 	return ParseNode(buffer)
 }
 
