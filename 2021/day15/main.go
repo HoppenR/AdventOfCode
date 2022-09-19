@@ -94,6 +94,7 @@ func (spt QueueHeap) Swap(i, j int) {
 func (spt *QueueHeap) Push(e interface{}) {
 	*spt = append(*spt, e.(Element))
 }
+
 func (spt *QueueHeap) Pop() (e interface{}) {
 	*spt, e = (*spt)[:len(*spt)-1], (*spt)[len(*spt)-1]
 	return

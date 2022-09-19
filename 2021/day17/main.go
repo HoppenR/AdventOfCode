@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"math"
 )
 
 type Pos struct {
@@ -62,7 +61,7 @@ func Fire(xv, yv int, area *Area) (bool, int) {
 		pos.x += xv
 		pos.y += yv
 		if xv != 0 {
-			xv -= xv / int(math.Abs(float64(xv)))
+			xv -= xv / (xv | (1 >> 31))
 		}
 		yv--
 	}
