@@ -1,0 +1,12 @@
+-pedantic
+-Wall
+-Wcast-qual
+-Wextra
+-Wmissing-include-dirs
+-Wold-style-cast
+-Wredundant-decls
+-Wshadow
+-Wsign-conversion
+-Wswitch-default
+-xc++
+-std=c++14
