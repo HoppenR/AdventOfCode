@@ -1,13 +1,9 @@
 use std::io::{self, Error, Read, Write};
 
-fn highest_kcal_count(elves: &Vec<Vec<u32>>) -> u32 {
-    return *elves.iter().flatten().max().unwrap();
-}
-
-fn highest_3_kcal_count(elves: &Vec<Vec<u32>>) -> u32 {
+fn highest_kcal_count(elves: &Vec<Vec<u32>>, count: usize) -> u32 {
     let mut highest: Vec<u32> = elves.iter().map(|elf| elf.iter().sum()).collect();
     highest.sort();
-    return highest.iter().rev().take(3).sum();
+    return highest.iter().rev().take(count).sum();
 }
 
 fn main() -> Result<(), Error> {
@@ -19,7 +15,7 @@ fn main() -> Result<(), Error> {
         .map(|elf| elf.split("\n").flat_map(|kcal| kcal.parse().ok()).collect())
         .collect();
 
-    writeln!(io::stdout(), "p1: {}", highest_kcal_count(&elves)).unwrap();
-    writeln!(io::stdout(), "p2: {}", highest_3_kcal_count(&elves)).unwrap();
+    writeln!(io::stdout(), "p1: {}", highest_kcal_count(&elves, 1)).unwrap();
+    writeln!(io::stdout(), "p2: {}", highest_kcal_count(&elves, 3)).unwrap();
     return Ok(());
 }
