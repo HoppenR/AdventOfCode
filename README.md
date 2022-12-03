@@ -40,7 +40,7 @@ Clicking a star takes you to the solution
  </tr>
  <tr>
   <td>3</td>
-  <td></td>
+  <td><a href=2022/day03>⭐</a></td>
   <td><a href=2021/day03>⭐</a></td>
   <td><a href=2020/day03>⭐</a></td>
   <td><a href=2019/day03>⭐</a></td>
