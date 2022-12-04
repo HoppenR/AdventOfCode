@@ -1,51 +1,53 @@
 use std::collections::HashSet;
 use std::io::{self, Error, Read, Write};
+use std::iter::FromIterator;
 
 fn item_priority_sum(rucksacks: &Vec<&str>) -> u32 {
     return rucksacks
-        .into_iter()
+        .iter()
         .map(|r| r.split_at(r.len() / 2))
         .map(|(c1, c2)| {
-            for c1ch in c1.chars() {
-                for c2ch in c2.chars() {
-                    if c1ch == c2ch {
-                        if char::is_ascii_uppercase(&c1ch) {
-                            return 27 + (c1ch as u32 - 'A' as u32);
-                        } else {
-                            return 01 + (c1ch as u32 - 'a' as u32);
-                        }
+            return c1
+                .chars()
+                .find(|&c| c2.contains(c))
+                .map(|c| {
+                    if char::is_ascii_uppercase(&c) {
+                        return 27 + (c as u32 - 'A' as u32);
+                    } else {
+                        return 01 + (c as u32 - 'a' as u32);
                     }
-                }
-            }
-            return 0;
+                })
+                .unwrap();
         })
         .sum();
 }
 
 fn badge_priority_sum(rucksacks: &Vec<&str>) -> u32 {
-    let mut score: u32 = 0;
-    for group_sacks in rucksacks.chunks(3) {
-        let mut items: HashSet<char> = HashSet::new();
-        for r in group_sacks {
-            let mut backpack: HashSet<char> = HashSet::new();
-            for c in r.chars() {
-                backpack.insert(c);
-            }
-            if items.len() == 0 {
-                items = backpack;
-            } else {
-                items = items.intersection(&backpack).cloned().collect();
-            }
-        }
-        for c in items {
-            if char::is_ascii_uppercase(&c) {
-                score += 27 + (c as u32 - 'A' as u32);
-            } else {
-                score += 01 + (c as u32 - 'a' as u32);
-            }
-        }
-    }
-    return score;
+    return rucksacks
+        .chunks(3)
+        .map(|group_sacks| {
+            let group_item_sets: Vec<HashSet<char>> = group_sacks
+                .iter()
+                .map(|r| {
+                    return HashSet::from_iter(r.chars());
+                })
+                .collect();
+            return group_item_sets
+                .iter()
+                .skip(1)
+                .fold(group_item_sets[0].clone(), |cur, next| (&cur) & (&next))
+                .into_iter()
+                .next()
+                .map(|c| {
+                    if char::is_ascii_uppercase(&c) {
+                        return 27 + (c as u32 - 'A' as u32);
+                    } else {
+                        return 01 + (c as u32 - 'a' as u32);
+                    }
+                })
+                .unwrap();
+        })
+        .sum();
 }
 
 fn main() -> Result<(), Error> {
