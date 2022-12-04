@@ -13,24 +13,20 @@ impl FromStr for Range {
     type Err = RangeError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let (left, right) = s
-            .split_once("-")
-            .map(|(start, end)| (start.parse().unwrap(), end.parse().unwrap()))
-            .unwrap();
-
+        let (left, right) = s.split_once("-").unwrap();
         return Ok(Range {
-            start: left,
-            end: right,
+            start: left.parse().unwrap(),
+            end: right.parse().unwrap(),
         });
     }
 }
 
 fn full_overlap(left: &Range, right: &Range) -> bool {
-    left.start >= right.start && left.end <= right.end
+    return left.start >= right.start && left.end <= right.end;
 }
 
 fn part_overlap(left: &Range, right: &Range) -> bool {
-    left.start <= right.end && left.end >= right.start
+    return left.start <= right.end && left.end >= right.start;
 }
 
 fn overlap_cnt(
@@ -50,10 +46,11 @@ fn main() -> Result<(), Error> {
     let pairs: Vec<(Range, Range)> = input
         .trim()
         .lines()
-        .map(|l| {
-            l.split_once(",")
-                .map(|(l, r)| (l.parse().unwrap(), r.parse().unwrap()))
-                .unwrap()
+        .map(|line| {
+            return line
+                .split_once(",")
+                .map(|(left, right)| (left.parse().unwrap(), right.parse().unwrap()))
+                .unwrap();
         })
         .collect();
 
