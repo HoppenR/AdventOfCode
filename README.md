@@ -176,7 +176,7 @@ Clicking a star takes you to the solution
   <td></td>
   <td><a href=2021/day15><img src="goldstar.png" width=16 height=16></a></td>
   <td><a href=2020/day15><img src="goldstar.png" width=16 height=16></a></td>
-  <td><a href=2019/day15><img src="goldstar.png" width=16 height=16></a>*</td>
+  <td><a href=2019/day15><img src="goldstar.png" width=16 height=16></a></td>
   <td></td>
   <td></td>
   <td></td>
@@ -294,4 +294,27 @@ Clicking a star takes you to the solution
  </tr>
 </table>
 
-<sup>*Requires manual inputs and is not solved automatically</sup>
+<sup>∗ 2019/day15 requires manual inputs</sup>
+
+<table>
+ <tr>
+  <th>2022</th>
+  <th>2021</th>
+  <th>2020</th>
+  <th>2019</th>
+  <th>2018</th>
+  <th>2017</th>
+  <th>2016</th>
+  <th>2015</th>
+ </tr>
+ <tr>
+  <td>rust</td>
+  <td>go</td>
+  <td>go</td>
+  <td>c++</td>
+  <td>c++</td>
+  <td>py</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+</table>
