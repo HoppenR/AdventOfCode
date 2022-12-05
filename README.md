@@ -68,7 +68,7 @@ Clicking a star takes you to the solution
   <td><a href=2020/day05><img src="goldstar.png" width=16 height=16></a></td>
   <td><a href=2019/day05><img src="goldstar.png" width=16 height=16></a></td>
   <td><a href=2018/day05><img src="goldstar.png" width=16 height=16></a></td>
-  <td></td>
+  <td><a href=2017/day05><img src="goldstar.png" width=16 height=16></a></td>
   <td></td>
   <td></td>
  </tr>
