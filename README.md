@@ -23,8 +23,8 @@ Clicking a star takes you to the solution
   <td><a href=2021/day01><img src="goldstar.png" width=16 height=16></a></td>
   <td><a href=2020/day01><img src="goldstar.png" width=16 height=16></a></td>
   <td><a href=2019/day01><img src="goldstar.png" width=16 height=16></a></td>
-  <td><a href=2018/day1><img src="goldstar.png" width=16 height=16></a></td>
-  <td><a href=2017/day1><img src="goldstar.png" width=16 height=16></a></td>
+  <td><a href=2018/day01><img src="goldstar.png" width=16 height=16></a></td>
+  <td><a href=2017/day01><img src="goldstar.png" width=16 height=16></a></td>
   <td></td>
   <td></td>
  </tr>
@@ -34,8 +34,8 @@ Clicking a star takes you to the solution
   <td><a href=2021/day02><img src="goldstar.png" width=16 height=16></a></td>
   <td><a href=2020/day02><img src="goldstar.png" width=16 height=16></a></td>
   <td><a href=2019/day02><img src="goldstar.png" width=16 height=16></a></td>
-  <td><a href=2018/day2><img src="goldstar.png" width=16 height=16></a></td>
-  <td><a href=2017/day2><img src="goldstar.png" width=16 height=16></a></td>
+  <td><a href=2018/day02><img src="goldstar.png" width=16 height=16></a></td>
+  <td><a href=2017/day02><img src="goldstar.png" width=16 height=16></a></td>
   <td></td>
   <td></td>
  </tr>
@@ -45,8 +45,8 @@ Clicking a star takes you to the solution
   <td><a href=2021/day03><img src="goldstar.png" width=16 height=16></a></td>
   <td><a href=2020/day03><img src="goldstar.png" width=16 height=16></a></td>
   <td><a href=2019/day03><img src="goldstar.png" width=16 height=16></a></td>
-  <td><a href=2018/day3><img src="goldstar.png" width=16 height=16></a></td>
-  <td><a href=2017/day3><img src="goldstar.png" width=16 height=16></a></td>
+  <td><a href=2018/day03><img src="goldstar.png" width=16 height=16></a></td>
+  <td><a href=2017/day03><img src="goldstar.png" width=16 height=16></a></td>
   <td></td>
   <td></td>
  </tr>
@@ -56,8 +56,8 @@ Clicking a star takes you to the solution
   <td><a href=2021/day04><img src="goldstar.png" width=16 height=16></a></td>
   <td><a href=2020/day04><img src="goldstar.png" width=16 height=16></a></td>
   <td><a href=2019/day04><img src="goldstar.png" width=16 height=16></a></td>
-  <td><a href=2018/day4><img src="goldstar.png" width=16 height=16></a></td>
-  <td></td>
+  <td><a href=2018/day04><img src="goldstar.png" width=16 height=16></a></td>
+  <td><a href=2017/day04><img src="goldstar.png" width=16 height=16></a></td>
   <td></td>
   <td></td>
  </tr>
@@ -67,7 +67,7 @@ Clicking a star takes you to the solution
   <td><a href=2021/day05><img src="goldstar.png" width=16 height=16></a></td>
   <td><a href=2020/day05><img src="goldstar.png" width=16 height=16></a></td>
   <td><a href=2019/day05><img src="goldstar.png" width=16 height=16></a></td>
-  <td><a href=2018/day5><img src="goldstar.png" width=16 height=16></a></td>
+  <td><a href=2018/day05><img src="goldstar.png" width=16 height=16></a></td>
   <td></td>
   <td></td>
   <td></td>
@@ -78,7 +78,7 @@ Clicking a star takes you to the solution
   <td><a href=2021/day06><img src="goldstar.png" width=16 height=16></a></td>
   <td><a href=2020/day06><img src="goldstar.png" width=16 height=16></a></td>
   <td><a href=2019/day06><img src="goldstar.png" width=16 height=16></a></td>
-  <td><a href=2018/day6><img src="silverstar.png" width=16 height=16></a></td>
+  <td><a href=2018/day06><img src="silverstar.png" width=16 height=16></a></td>
   <td></td>
   <td></td>
   <td></td>
@@ -89,7 +89,7 @@ Clicking a star takes you to the solution
   <td><a href=2021/day07><img src="goldstar.png" width=16 height=16></a></td>
   <td><a href=2020/day07><img src="goldstar.png" width=16 height=16></a></td>
   <td><a href=2019/day07><img src="goldstar.png" width=16 height=16></a></td>
-  <td><a href=2018/day7><img src="silverstar.png" width=16 height=16></a></td>
+  <td><a href=2018/day07><img src="silverstar.png" width=16 height=16></a></td>
   <td></td>
   <td></td>
   <td></td>
@@ -100,7 +100,7 @@ Clicking a star takes you to the solution
   <td><a href=2021/day08><img src="goldstar.png" width=16 height=16></a></td>
   <td><a href=2020/day08><img src="goldstar.png" width=16 height=16></a></td>
   <td><a href=2019/day08><img src="goldstar.png" width=16 height=16></a></td>
-  <td><a href=2018/day8><img src="silverstar.png" width=16 height=16></a></td>
+  <td><a href=2018/day08><img src="silverstar.png" width=16 height=16></a></td>
   <td></td>
   <td></td>
   <td></td>
@@ -111,7 +111,7 @@ Clicking a star takes you to the solution
   <td><a href=2021/day09><img src="goldstar.png" width=16 height=16></a></td>
   <td><a href=2020/day09><img src="goldstar.png" width=16 height=16></a></td>
   <td><a href=2019/day09><img src="goldstar.png" width=16 height=16></a></td>
-  <td><a href=2018/day9><img src="goldstar.png" width=16 height=16></a></td>
+  <td><a href=2018/day09><img src="goldstar.png" width=16 height=16></a></td>
   <td></td>
   <td></td>
   <td></td>
