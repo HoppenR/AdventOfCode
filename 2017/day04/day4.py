@@ -28,7 +28,6 @@ def main() -> int:
         passwords: List[List[str]] = [password.strip().split(' ') for password in f.readlines()]
         print(count_valid_passwords(passwords, 1))
         print(count_valid_passwords(passwords, 2))
-
     return 0
 
 if __name__ == '__main__':

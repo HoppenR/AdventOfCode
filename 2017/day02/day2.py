@@ -1,12 +1,12 @@
 from argparse import ArgumentParser
-from typing import Callable, List
+from typing import Callable, List, Union
 
 def coprime(x: int, y: int) -> int:
     if y > x:
         x, y = y, x
     return x // y if float(x / y).is_integer() else 0
 
-def checksum(digs: List[List[int]], f: Callable[[int, int], int] = None) -> int:
+def checksum(digs: List[List[int]], f: Union[Callable[[int, int], int] , None] = None) -> int:
     return sum(max(line) - min(line) for line in digs) if not f else sum(f(digit, odigit) for line in digs for j, digit in enumerate(line) for odigit in line[j+1:])
 
 def main() -> int:

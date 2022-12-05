@@ -1,24 +1,28 @@
 from argparse import ArgumentParser
-from typing import Tuple
+from typing import Tuple, Dict, List
 
 def spiral(i: int) -> int:
-    hor = True
-    lineLen = cur = 0
+    hor: bool = True
+    lineLen: int = 0
+    cur: int = 0
     while cur < i:
         lineLen += hor
         cur += lineLen
         hor = not hor
-    distx = (lineLen-1) // 2 - (cur - i)
-    disty = lineLen // 2
+    distx: int = (lineLen-1) // 2 - (cur - i)
+    disty: int = lineLen // 2
     return abs(distx) + abs(disty)
 
 def stress_test(i: int) -> int:
-    directions = [(1, 0), (0, 1), (-1, 0), (0, -1)]
-    comparisons = [(1, 0), (0, 1), (-1, 0), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1)]
-    values = {(0, 0): 1}
-    position = (0, 0)
-    hor = running = True
-    lineLen = dirIdx = 0
+    directions: List[Tuple[int, int]] = [(1, 0), (0, 1), (-1, 0), (0, -1)]
+    comparisons: List[Tuple[int, int]] = [(1, 0), (0, 1), (-1, 0), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1)]
+    values: Dict[Tuple[int, int], int] = {(0, 0): 1}
+    position: Tuple[int, int] = (0, 0)
+    hor: bool = True
+    running: bool = True
+    lineLen: int = 0
+    dirIdx: int = 0
+    posVal: int = 0
     while running:
         lineLen += hor
         dirIdx = (dirIdx + 1) % 4
@@ -43,7 +47,7 @@ def main() -> int:
     parser.add_argument('file')
     args = parser.parse_args()
     with open(args.file, encoding='utf-8') as f:
-        digit = int(f.readline().strip())
+        digit: int = int(f.readline().strip())
         print(spiral(digit))
         print(stress_test(digit))
     return 0
