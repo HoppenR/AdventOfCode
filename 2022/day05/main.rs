@@ -1,7 +1,8 @@
 use std::collections::VecDeque;
 use std::io::{self, Error, Read, Write};
 
-fn box_msg(stacks: &mut Vec<VecDeque<char>>, moves: &Vec<Vec<usize>>, ordered: bool) -> String {
+fn box_msg(oldstacks: &Vec<VecDeque<char>>, moves: &Vec<Vec<usize>>, ordered: bool) -> String {
+    let mut stacks = oldstacks.clone();
     for mov in moves {
         let (amount, source, target) = (mov[0], mov[1], mov[2]);
         let mut crane: VecDeque<char> = VecDeque::new();
@@ -19,31 +20,35 @@ fn box_msg(stacks: &mut Vec<VecDeque<char>>, moves: &Vec<Vec<usize>>, ordered: b
     return stacks.iter().map(|s| *s.front().unwrap()).collect();
 }
 
-fn construct_stacks(blueprint: &str, size: usize) -> Vec<VecDeque<char>> {
-    let mut stacks: Vec<VecDeque<char>> = vec![VecDeque::new(); size];
-    for (i, c) in blueprint.chars().skip(1).step_by(4).enumerate() {
-        if c != ' ' {
-            stacks[i % size].push_back(c);
-        }
-    }
-    return stacks;
-}
-
 fn main() -> Result<(), Error> {
     let mut input: String = String::new();
     io::stdin().read_to_string(&mut input).unwrap();
 
-    let ((blueprint, indexes), moves): ((&str, &str), Vec<Vec<usize>>) = input
+    let (stacks, moves): (Vec<VecDeque<char>>, Vec<Vec<usize>>) = input
         .split_once("\n\n")
         .map(|(s1, s2)| {
             return (
-                s1.rsplit_once("\n").unwrap(),
+                s1.rsplit_once("\n")
+                    .map(|(blueprint, indexes)| {
+                        let size = indexes.split_whitespace().last().unwrap().parse().unwrap();
+                        let mut stacks: Vec<VecDeque<char>> = vec![VecDeque::new(); size];
+                        blueprint
+                            .chars()
+                            .skip(1)
+                            .step_by(4)
+                            .enumerate()
+                            .filter(|(_, c)| *c != ' ')
+                            .for_each(|(i, c)| stacks[i % size].push_back(c));
+                        return stacks;
+                    })
+                    .unwrap(),
                 s2.trim()
                     .split("\n")
                     .map(|instr| {
                         return instr
                             .split_whitespace()
-                            .filter(|word| word.chars().next().unwrap().is_numeric())
+                            .skip(1)
+                            .step_by(2)
                             .map(|num| num.parse::<usize>().unwrap() - 1)
                             .collect();
                     })
@@ -51,12 +56,8 @@ fn main() -> Result<(), Error> {
             );
         })
         .unwrap();
-    let size = indexes.split_whitespace().last().unwrap().parse().unwrap();
-    let mut stacks: Vec<VecDeque<char>>;
 
-    stacks = construct_stacks(blueprint, size);
-    writeln!(io::stdout(), "p1: {}", box_msg(&mut stacks, &moves, false)).unwrap();
-    stacks = construct_stacks(blueprint, size);
-    writeln!(io::stdout(), "p2: {}", box_msg(&mut stacks, &moves, true)).unwrap();
+    writeln!(io::stdout(), "p1: {}", box_msg(&stacks, &moves, false)).unwrap();
+    writeln!(io::stdout(), "p2: {}", box_msg(&stacks, &moves, true)).unwrap();
     Ok(())
 }
