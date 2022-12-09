@@ -82,6 +82,7 @@ fn smallest_required_deletion(lines: &Vec<String>) -> usize {
 fn main() -> Result<(), Error> {
     let mut input: String = String::new();
     io::stdin().read_to_string(&mut input).unwrap();
+
     let lines: Vec<String> = input.lines().map(String::from).collect();
 
     writeln!(io::stdout(), "p1: {}", filter_sum_dir_tree(&lines)).unwrap();
