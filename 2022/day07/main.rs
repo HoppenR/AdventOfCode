@@ -1,34 +1,36 @@
-use std::cmp::min;
 use std::collections::HashMap;
 use std::io::{self, Error, Read, Write};
 
-struct File {
-    name: String,
-    size: usize,
-}
-
-fn file_locations(lines: &Vec<String>) -> Vec<File> {
-    let mut files: Vec<File> = Vec::new();
-    let mut path: String = "".to_string();
+fn total_folder_sizes(lines: &Vec<String>) -> HashMap<String, usize> {
+    let mut total_sizes: HashMap<String, usize> = HashMap::new();
+    let mut path: String = String::new();
     for line in lines {
         let (cmd, arg) = line.rsplit_once(" ").unwrap();
         match cmd {
-            "$" | "dir" => continue,
+            "$" | "dir" => {
+                continue;
+            }
             "$ cd" => match arg {
-                ".." => path = path[0..path.rfind("/").unwrap()].to_string(),
-                "/" => continue,
+                ".." => {
+                    let lastslash = path.rfind("/").unwrap();
+                    path = path[0..lastslash].to_string()
+                }
+                "/" => {
+                    continue;
+                }
                 _ => {
                     path.push('/');
                     path.push_str(arg);
                 }
             },
-            _ => files.push(File {
-                name: path.clone(),
-                size: cmd.parse().unwrap(),
-            }),
+            _ => {
+                for parent in parent_folders(&path.clone()) {
+                    *total_sizes.entry(parent).or_insert(0) += cmd.parse::<usize>().unwrap();
+                }
+            }
         }
     }
-    return files;
+    return total_sizes;
 }
 
 fn parent_folders(parent_string: &String) -> Vec<String> {
@@ -41,42 +43,21 @@ fn parent_folders(parent_string: &String) -> Vec<String> {
     return parents;
 }
 
-fn files_to_total_folder_sizes(files: &Vec<File>) -> HashMap<String, usize> {
-    let mut total_sizes: HashMap<String, usize> = HashMap::new();
-    for file in files {
-        for parent in parent_folders(&file.name) {
-            *total_sizes.entry(parent).or_insert(0) += file.size;
-        }
-    }
-    return total_sizes;
-}
-
-fn sum_file_sizes_capped(total_sizes: &HashMap<String, usize>, max: usize) -> usize {
-    return total_sizes
-        .iter()
-        .map(|(_, size)| size)
-        .filter(|&size| size <= &max)
+fn filter_sum_dir_tree(lines: &Vec<String>) -> usize {
+    return total_folder_sizes(lines)
+        .into_values()
+        .filter(|&size| size <= 100000)
         .sum();
 }
 
-fn filter_sum_dir_tree(lines: &Vec<String>) -> usize {
-    let files: Vec<File> = file_locations(lines);
-    let total_sizes: HashMap<String, usize> = files_to_total_folder_sizes(&files);
-    let sum: usize = sum_file_sizes_capped(&total_sizes, 100000);
-    return sum;
-}
-
 fn smallest_required_deletion(lines: &Vec<String>) -> usize {
-    let files: Vec<File> = file_locations(lines);
-    let total_sizes: HashMap<String, usize> = files_to_total_folder_sizes(&files);
-    let free_space: usize = 70000000 - total_sizes[&"".to_string()];
-    let mut smallest_deletion: usize = usize::MAX;
-    for (_, size) in total_sizes {
-        if free_space + size >= 30000000 {
-            smallest_deletion = min(smallest_deletion, size);
-        }
-    }
-    return smallest_deletion;
+    let folder_sizes: HashMap<String, usize> = total_folder_sizes(lines);
+    let free_space: usize = 70000000 - folder_sizes[&"".to_string()];
+    return folder_sizes
+        .into_values()
+        .filter(|&size| free_space + size >= 30000000)
+        .min()
+        .unwrap();
 }
 
 fn main() -> Result<(), Error> {
