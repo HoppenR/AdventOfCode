@@ -1,63 +1,83 @@
-use std::{
-    collections::HashSet,
-    io::{self, Error, Read, Write},
-};
+use std::collections::{HashSet, VecDeque};
+use std::io::{self, Error, Read, Write};
 
-#[derive(Debug, Hash, Eq, PartialEq)]
-struct Point3D {
-    x: i32,
-    y: i32,
-    z: i32,
+fn neighbors((x, y, z): (i32, i32, i32)) -> Vec<(i32, i32, i32)> {
+    return vec![
+        (x + 1, y, z),
+        (x, y + 1, z),
+        (x, y, z + 1),
+        (x - 1, y, z),
+        (x, y - 1, z),
+        (x, y, z - 1),
+    ];
 }
 
-fn get_droplet_sizes(droplets: &Vec<Point3D>) -> HashSet<Point3D> {
-    let mut sides: HashSet<Point3D> = HashSet::new();
-    let compare_offsets: Vec<(i32, i32, i32)> = vec![
-        (1, 0, 0),
-        (0, 1, 0),
-        (0, 0, 1),
-        (-1, 0, 0),
-        (0, -1, 0),
-        (0, 0, -1),
-    ];
-    for drop in droplets {
-        for comp_off in &compare_offsets {
-            let cur_side = Point3D {
-                x: drop.x + comp_off.0,
-                y: drop.y + comp_off.1,
-                z: drop.z + comp_off.2,
-            };
-            if sides.contains(&cur_side) {
-                sides.remove(&cur_side);
-            } else {
-                sides.insert(cur_side);
+fn flood_fill_outer(points: &Vec<(i32, i32, i32)>) -> HashSet<(i32, i32, i32)> {
+    let (mut min_x, mut min_y, mut min_z, mut max_x, mut max_y, mut max_z) =
+        (i32::MAX, i32::MAX, i32::MAX, i32::MIN, i32::MIN, i32::MIN);
+    for &(x, y, z) in points {
+        min_x = i32::min(min_x, x);
+        min_y = i32::min(min_y, y);
+        min_z = i32::min(min_z, z);
+        max_x = i32::max(max_x, x);
+        max_y = i32::max(max_y, y);
+        max_z = i32::max(max_z, z);
+    }
+    let mut seen: HashSet<(i32, i32, i32)> = HashSet::new();
+    let mut queue: VecDeque<(i32, i32, i32)> = VecDeque::new();
+    let start: (i32, i32, i32) = (0, 0, 0);
+    queue.push_back(start);
+    seen.insert(start);
+    while queue.len() > 0 {
+        let point = queue.pop_front().unwrap();
+        for (x, y, z) in neighbors(point) {
+            if (x >= min_x - 1 && x <= max_x + 1)
+                && (y >= min_y - 1 && y <= max_y + 1)
+                && (z >= min_z - 1 && z <= max_z + 1)
+                && !points.contains(&(x, y, z))
+                && seen.insert((x, y, z))
+            {
+                queue.push_back((x, y, z));
             }
         }
     }
-    return sides;
+    return seen;
 }
 
-fn count_surface_area(droplets: &Vec<Point3D>) -> usize {
-    return get_droplet_sizes(droplets).len();
+fn all_sides(points: &Vec<(i32, i32, i32)>) -> usize {
+    return points
+        .iter()
+        .flat_map(|&p| neighbors(p))
+        .filter(|p| !points.contains(p))
+        .count();
+}
+
+fn extern_sides(points: &Vec<(i32, i32, i32)>) -> usize {
+    return flood_fill_outer(points)
+        .iter()
+        .flat_map(|&p| neighbors(p))
+        .filter(|p| points.contains(p))
+        .count();
 }
 
 fn main() -> Result<(), Error> {
     let mut input: String = String::new();
     io::stdin().read_to_string(&mut input).unwrap();
 
-    let droplets: Vec<Point3D> = input
+    let droplets: Vec<(i32, i32, i32)> = input
         .trim()
         .split('\n')
         .map(|line| {
             let coords: Vec<&str> = line.splitn(3, ',').collect();
-            return Point3D {
-                x: coords[0].parse::<i32>().unwrap() * 2,
-                y: coords[1].parse::<i32>().unwrap() * 2,
-                z: coords[2].parse::<i32>().unwrap() * 2,
-            };
+            return (
+                coords[0].parse().unwrap(),
+                coords[1].parse().unwrap(),
+                coords[2].parse().unwrap(),
+            );
         })
-        .collect::<Vec<Point3D>>();
+        .collect();
 
-    writeln!(io::stdout(), "p1: {}", count_surface_area(&droplets)).unwrap();
+    writeln!(io::stdout(), "p1: {}", all_sides(&droplets)).unwrap();
+    writeln!(io::stdout(), "p2: {}", extern_sides(&droplets)).unwrap();
     Ok(())
 }
