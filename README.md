@@ -195,7 +195,7 @@ Clicking a star takes you to the solution
  </tr>
  <tr>
   <td>17</td>
-  <td><a href=2022/day17><img src="silverstar.png" width=16 height=16></a></td>
+  <td><a href=2022/day17><img src="goldstar.png" width=16 height=16></a></td>
   <td><a href=2021/day17><img src="goldstar.png" width=16 height=16></a></td>
   <td><a href=2020/day17><img src="goldstar.png" width=16 height=16></a></td>
   <td><a href=2019/day17><img src="silverstar.png" width=16 height=16></a></td>

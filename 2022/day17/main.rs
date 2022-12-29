@@ -1,10 +1,31 @@
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::io::{self, Error, Read, Write};
 
 enum Direction {
     Left,
     Right,
     Down,
+}
+
+#[derive(Hash, Eq, PartialEq)]
+struct State {
+    cur_direction_index: usize,
+    landed_x: usize,
+    shape_index: usize,
+    top_y_offsets: [usize; 7],
+}
+
+fn top_down_view(board: &HashSet<(usize, usize)>, stack_height: usize) -> [usize; 7] {
+    let mut top_y_offsets: [usize; 7] = [usize::MAX; 7];
+    for x in 1..=7 {
+        for y_off in 0..stack_height {
+            if board.contains(&(stack_height - y_off, x)) {
+                top_y_offsets[x - 1] = y_off;
+                break;
+            }
+        }
+    }
+    return top_y_offsets;
 }
 
 fn collides(
@@ -55,8 +76,8 @@ fn insert_shape(shape: &str, board: &mut HashSet<(usize, usize)>, posx: usize, p
     }
 }
 
-fn tetris(directions: &Vec<Direction>, max_rocks: usize) -> usize {
-    let shapes: Vec<&str> = vec![
+fn ffw_tetris(dirs: &Vec<Direction>, max_rocks: usize) -> usize {
+    let shapes: [&str; 5] = [
         "####",
         ".#.\n###\n.#.",
         "..#\n..#\n###",
@@ -64,41 +85,53 @@ fn tetris(directions: &Vec<Direction>, max_rocks: usize) -> usize {
         "##\n##",
     ];
     let mut board: HashSet<(usize, usize)> = HashSet::new();
-    let mut shape_index: usize = 0;
-    let mut direction_index: usize = 0;
+    let mut states: HashMap<State, (usize, usize)> = HashMap::new();
+    let mut dir_idx: usize = 0;
+    let mut dropped_rocks = 0;
+    let mut shape_idx: usize = 0;
     let mut stack_height: usize = 0;
-    for _ in 0..max_rocks {
-        let shape_height: usize = shapes[shape_index].chars().filter(|c| *c == '\n').count() + 1;
-        let mut posy: usize = stack_height + shape_height + 3;
+    let mut total_cycle_height: usize = 0;
+    while dropped_rocks < max_rocks {
+        let shape_height: usize = shapes[shape_idx].chars().filter(|c| *c == '\n').count() + 1;
+        let mut posy: usize = stack_height + shape_height + 3 + 1;
         let mut posx: usize = 3;
-        let current_shape: &str = shapes[shape_index];
-        loop {
-            let current_dir: &Direction = &directions[direction_index];
-            if !collides(current_shape, &board, posx, posy, current_dir) {
-                match current_dir {
+        while !collides(shapes[shape_idx], &board, posx, posy, &Direction::Down) {
+            posy -= 1;
+            if !collides(shapes[shape_idx], &board, posx, posy, &dirs[dir_idx]) {
+                match &dirs[dir_idx] {
                     Direction::Left => posx -= 1,
                     Direction::Right => posx += 1,
                     Direction::Down => {}
                 }
             }
-            direction_index = (direction_index + 1) % directions.len();
-            if collides(current_shape, &board, posx, posy, &Direction::Down) {
-                break;
-            }
-            posy -= 1;
+            dir_idx = (dir_idx + 1) % dirs.len();
         }
-        insert_shape(current_shape, &mut board, posx, posy);
+        insert_shape(shapes[shape_idx], &mut board, posx, posy);
+        dropped_rocks += 1;
         stack_height = usize::max(stack_height, posy);
-        shape_index = (shape_index + 1) % shapes.len();
+        shape_idx = (shape_idx + 1) % shapes.len();
+        let current_state: State = State {
+            landed_x: posx,
+            shape_index: shape_idx,
+            cur_direction_index: dir_idx,
+            top_y_offsets: top_down_view(&board, stack_height),
+        };
+        if let Some((cycle_height, cycle_rocks)) =
+            states.insert(current_state, (stack_height, dropped_rocks))
+        {
+            let cycle_amounts = (max_rocks - dropped_rocks) / (dropped_rocks - cycle_rocks);
+            total_cycle_height += (stack_height - cycle_height) * cycle_amounts;
+            dropped_rocks += cycle_amounts * (dropped_rocks - cycle_rocks);
+        }
     }
-    return stack_height;
+    return stack_height + total_cycle_height;
 }
 
 fn main() -> Result<(), Error> {
     let mut input: String = String::new();
     io::stdin().read_to_string(&mut input).unwrap();
 
-    let directions: Vec<Direction> = input
+    let dirs: Vec<Direction> = input
         .trim()
         .chars()
         .filter_map(|c| match c {
@@ -108,6 +141,7 @@ fn main() -> Result<(), Error> {
         })
         .collect();
 
-    writeln!(io::stdout(), "p1: {}", tetris(&directions, 2022)).unwrap();
+    writeln!(io::stdout(), "p1: {}", ffw_tetris(&dirs, 2022)).unwrap();
+    writeln!(io::stdout(), "p2: {}", ffw_tetris(&dirs, 1000000000000)).unwrap();
     Ok(())
 }
