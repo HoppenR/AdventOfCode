@@ -45,18 +45,16 @@ fn sorted_packets(packets: &Vec<Packet>) -> usize {
 
 fn decoder_key(old_packets: &Vec<Packet>) -> usize {
     let mut packets: Vec<Packet> = old_packets.clone();
-    let mut product: usize = 1;
-    let divider1: &Packet = &parse_root_packet(&mut "[[2]]".chars());
-    let divider2: &Packet = &parse_root_packet(&mut "[[6]]".chars());
-    packets.push(divider1.clone());
-    packets.push(divider2.clone());
+    let dividers: [Packet; 2] = [
+        parse_root_packet(&mut "[[2]]".chars()),
+        parse_root_packet(&mut "[[6]]".chars()),
+    ];
+    packets.extend_from_slice(&dividers);
     packets.sort();
-    for (i, packet) in packets.iter().enumerate() {
-        if packet == divider1 || packet == divider2 {
-            product *= i + 1;
-        }
-    }
-    return product;
+    return dividers
+        .iter()
+        .filter_map(|divider| packets.binary_search(divider).ok())
+        .fold(1, |acc, ix| acc * (ix + 1));
 }
 
 fn parse_packet(ch_iter: &mut Chars) -> Packet {
@@ -95,12 +93,11 @@ fn main() -> Result<(), Error> {
 
     let packets: Vec<Packet> = input
         .split("\n\n")
-        .map(|pair| {
+        .flat_map(|pair| {
             return pair.trim().split("\n").map(|l| {
                 return parse_root_packet(&mut l.chars());
             });
         })
-        .flatten()
         .collect();
 
     writeln!(io::stdout(), "p1: {}", sorted_packets(&packets)).unwrap();
