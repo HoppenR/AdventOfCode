@@ -22,9 +22,15 @@ fn box_msg(oldstacks: &Vec<VecDeque<char>>, moves: &Vec<Vec<usize>>, ordered: bo
 
 fn main() -> Result<(), Error> {
     let mut input: String = String::new();
-    io::stdin().read_to_string(&mut input).unwrap();
+    io::stdin().read_to_string(&mut input)?;
+    let (stacks, moves): (Vec<VecDeque<char>>, Vec<Vec<usize>>) = parse(&input);
+    writeln!(io::stdout(), "p1: {}", box_msg(&stacks, &moves, false))?;
+    writeln!(io::stdout(), "p2: {}", box_msg(&stacks, &moves, true))?;
+    Ok(())
+}
 
-    let (stacks, moves): (Vec<VecDeque<char>>, Vec<Vec<usize>>) = input
+fn parse(input: &str) -> (Vec<VecDeque<char>>, Vec<Vec<usize>>) {
+    return input
         .split_once("\n\n")
         .map(|(s1, s2)| {
             return (
@@ -56,8 +62,26 @@ fn main() -> Result<(), Error> {
             );
         })
         .unwrap();
+}
 
-    writeln!(io::stdout(), "p1: {}", box_msg(&stacks, &moves, false)).unwrap();
-    writeln!(io::stdout(), "p2: {}", box_msg(&stacks, &moves, true)).unwrap();
-    Ok(())
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const EXAMPLE: &str = "    [D]    \n[N] [C]    \n[Z] [M] [P]\n1   2   3 \n
+move 1 from 2 to 1
+move 3 from 1 to 3
+move 2 from 2 to 1
+move 1 from 1 to 2";
+    #[test]
+    fn test_part1() {
+        let (stacks, moves): (Vec<VecDeque<char>>, Vec<Vec<usize>>) = parse(EXAMPLE);
+        assert_eq!(box_msg(&stacks, &moves, false), "CMZ");
+    }
+
+    #[test]
+    fn test_part2() {
+        let (stacks, moves): (Vec<VecDeque<char>>, Vec<Vec<usize>>) = parse(EXAMPLE);
+        assert_eq!(box_msg(&stacks, &moves, true), "MCD");
+    }
 }

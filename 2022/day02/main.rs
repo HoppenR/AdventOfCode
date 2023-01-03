@@ -27,9 +27,15 @@ fn count_score(rounds: &Vec<Vec<usize>>, ruleset: u8) -> usize {
 
 fn main() -> Result<(), Error> {
     let mut input: String = String::new();
-    io::stdin().read_to_string(&mut input).unwrap();
+    io::stdin().read_to_string(&mut input)?;
+    let rounds: Vec<Vec<usize>> = parse(&input);
+    writeln!(io::stdout(), "p1: {}", count_score(&rounds, 1))?;
+    writeln!(io::stdout(), "p2: {}", count_score(&rounds, 2))?;
+    Ok(())
+}
 
-    let rounds: Vec<Vec<usize>> = input
+fn parse(input: &str) -> Vec<Vec<usize>> {
+    return input
         .trim()
         .split('\n')
         .map(|l| {
@@ -43,8 +49,20 @@ fn main() -> Result<(), Error> {
                 .collect()
         })
         .collect();
+}
 
-    writeln!(io::stdout(), "p1: {}", count_score(&rounds, 1)).unwrap();
-    writeln!(io::stdout(), "p1: {}", count_score(&rounds, 2)).unwrap();
-    return Ok(());
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const EXAMPLE: &str = "A Y\nB X\nC Z";
+    #[test]
+    fn test_part1() {
+        assert_eq!(count_score(&parse(EXAMPLE), 1), 15);
+    }
+
+    #[test]
+    fn test_part2() {
+        assert_eq!(count_score(&parse(EXAMPLE), 2), 12);
+    }
 }

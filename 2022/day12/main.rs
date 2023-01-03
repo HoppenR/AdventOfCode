@@ -9,7 +9,7 @@ struct Point {
 
 fn find(map: &Vec<Vec<char>>, ch: char) -> Point {
     for y in 0..map.len() {
-        for x in 0..map.len() {
+        for x in 0..map[0].len() {
             if map[y][x] == ch {
                 return Point {
                     x: x as i32,
@@ -27,50 +27,37 @@ fn find_shortest_path(map: &Vec<Vec<char>>, reverse: bool) -> usize {
     } else {
         find(map, 'S')
     };
-    let mut queue: VecDeque<Point> = VecDeque::new();
+    let mut queue: VecDeque<(Point, usize)> = VecDeque::new();
     let mut seen: VecDeque<Point> = VecDeque::new();
-    let mut scores: VecDeque<usize> = VecDeque::new();
-    let checks: Vec<Point> = vec![
+    let checks: [Point; 4] = [
         Point { y: 1, x: 0 },
         Point { y: 0, x: -1 },
         Point { y: -1, x: 0 },
         Point { y: 0, x: 1 },
     ];
-    scores.push_back(0);
-    queue.push_back(start);
-    while queue.len() > 0 {
-        let cur_point = queue.pop_front().unwrap();
-        let mut cur_elevation = map[cur_point.y as usize][cur_point.x as usize];
-        if cur_elevation == 'S' {
-            cur_elevation = 'a';
-        } else if cur_elevation == 'E' {
-            cur_elevation = 'z';
+    queue.push_back((start, 0));
+    while !queue.is_empty() {
+        let (cur_point, cost): (Point, usize) = queue.pop_front().unwrap();
+        let cur_elevation: char = map[cur_point.y as usize][cur_point.x as usize];
+        if (!reverse && cur_elevation == 'E') || (reverse && cur_elevation == 'a') {
+            return cost;
         }
-        let cost = scores.pop_front().unwrap();
         for check in &checks {
             let comp = Point {
                 y: cur_point.y + check.y,
                 x: cur_point.x + check.x,
             };
-            if comp.y < 0 || comp.y >= map.len() as i32 {
-                continue;
-            }
-            if comp.x < 0 || comp.x >= map[0].len() as i32 {
-                continue;
-            }
-            let target_elevation = map[comp.y as usize][comp.x as usize];
-            if (!reverse && cur_elevation >= 'y' && target_elevation == 'E')
-                || (reverse && cur_elevation <= 'b' && target_elevation == 'a')
+            if let Some(&target_elevation) = map
+                .get(comp.y as usize)
+                .and_then(|line| line.get(comp.x as usize))
             {
-                return cost + 1;
-            }
-            if (!reverse && can_move(cur_elevation, target_elevation))
-                || (reverse && can_move(target_elevation, cur_elevation))
-            {
-                if !seen.contains(&comp) {
-                    seen.push_back(comp.clone());
-                    queue.push_back(comp.clone());
-                    scores.push_back(cost + 1);
+                if (!reverse && can_move(cur_elevation, target_elevation))
+                    || (reverse && can_move(target_elevation, cur_elevation))
+                {
+                    if !seen.contains(&comp) {
+                        seen.push_back(comp.clone());
+                        queue.push_back((comp.clone(), cost + 1));
+                    }
                 }
             }
         }
@@ -79,7 +66,11 @@ fn find_shortest_path(map: &Vec<Vec<char>>, reverse: bool) -> usize {
 }
 
 fn can_move(from: char, to: char) -> bool {
-    if to <= from {
+    if from == 'S' {
+        return to == 'a';
+    } else if to == 'E' {
+        return from == 'z';
+    } else if to <= from {
         return true;
     } else {
         return to as u32 - from as u32 == 1;
@@ -88,16 +79,39 @@ fn can_move(from: char, to: char) -> bool {
 
 fn main() -> Result<(), Error> {
     let mut input: String = String::new();
-    io::stdin().read_to_string(&mut input).unwrap();
+    io::stdin().read_to_string(&mut input)?;
+    let map: Vec<Vec<char>> = parse(&input);
+    writeln!(io::stdout(), "p1: {}", find_shortest_path(&map, false))?;
+    writeln!(io::stdout(), "p2: {}", find_shortest_path(&map, true))?;
+    Ok(())
+}
 
-    let map: Vec<Vec<char>> = input
+fn parse(input: &str) -> Vec<Vec<char>> {
+    return input
         .lines()
         .map(|l| {
             return l.chars().collect();
         })
         .collect();
+}
 
-    writeln!(io::stdout(), "p1: {}", find_shortest_path(&map, false)).unwrap();
-    writeln!(io::stdout(), "p2: {}", find_shortest_path(&map, true)).unwrap();
-    Ok(())
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const EXAMPLE: &str = "\
+Sabqponm
+abcryxxl
+accszExk
+acctuvwj
+abdefghi";
+    #[test]
+    fn test_part1() {
+        assert_eq!(find_shortest_path(&parse(EXAMPLE), false), 31);
+    }
+
+    #[test]
+    fn test_part2() {
+        assert_eq!(find_shortest_path(&parse(EXAMPLE), true), 29);
+    }
 }

@@ -5,13 +5,12 @@ fn visible_from_perimiter(trees: &Vec<Vec<u32>>) -> usize {
         .iter()
         .map(|l| return l.iter().map(|_| false).collect())
         .collect();
-    // Left <-> Right
     for y in 0..trees.len() {
-        let mut left_high = 0;
-        let mut right_high = 0;
+        let mut left_high: u32 = 0;
+        let mut right_high: u32 = 0;
         for x in 0..trees.len() {
-            let lefttree = trees[y][x];
-            let righttree = trees[y][trees.len() - x - 1];
+            let lefttree: u32 = trees[y][x];
+            let righttree: u32 = trees[y][trees.len() - x - 1];
             if lefttree > left_high {
                 left_high = lefttree;
                 seen[y][x] = true;
@@ -22,13 +21,12 @@ fn visible_from_perimiter(trees: &Vec<Vec<u32>>) -> usize {
             }
         }
     }
-    // Up <-> Down
     for x in 0..trees.len() {
-        let mut up_high = 0;
-        let mut down_high = 0;
+        let mut up_high: u32 = 0;
+        let mut down_high: u32 = 0;
         for y in 0..trees.len() {
-            let uptree = trees[y][x];
-            let downtree = trees[trees.len() - y - 1][x];
+            let uptree: u32 = trees[y][x];
+            let downtree: u32 = trees[trees.len() - y - 1][x];
             if uptree > up_high {
                 up_high = uptree;
                 seen[y][x] = true;
@@ -42,64 +40,62 @@ fn visible_from_perimiter(trees: &Vec<Vec<u32>>) -> usize {
     return seen
         .into_iter()
         .map(|l| {
-            return l.into_iter().map(|b| b as usize).sum::<usize>();
+            return l.into_iter().filter(|b| *b).count();
         })
         .sum();
 }
 
 fn outlook_score(ty: usize, tx: usize, trees: &Vec<Vec<u32>>) -> usize {
-    let mut scores: Vec<usize> = Vec::new();
-    scores.resize(4, 0);
-    let theight = trees[ty][tx];
-    // Up
+    let mut scores: Vec<usize> = Vec::from([0; 4]);
+    let tree_height: u32 = trees[ty][tx];
     for y in ty + 1..trees.len() {
         scores[0] += 1;
-        if trees[y][tx] >= theight {
+        if trees[y][tx] >= tree_height {
             break;
         }
     }
-    // Left
     for x in (0..tx).rev() {
         scores[1] += 1;
-        if trees[ty][x] >= theight {
+        if trees[ty][x] >= tree_height {
             break;
         }
     }
-    // Down
     for y in (0..ty).rev() {
         scores[2] += 1;
-        if trees[y][tx] >= theight {
+        if trees[y][tx] >= tree_height {
             break;
         }
     }
-    // Right
     for x in tx + 1..trees.len() {
         scores[3] += 1;
-        if trees[ty][x] >= theight {
+        if trees[ty][x] >= tree_height {
             break;
         }
     }
-    return scores.into_iter().reduce(|a, b| a * b).unwrap();
+    return scores.into_iter().product();
 }
 
 fn best_outlook_tree(trees: &Vec<Vec<u32>>) -> usize {
-    let mut max = 0;
+    let mut best: usize = 0;
     for y in 0..trees.len() {
         for x in 0..trees.len() {
-            let score = outlook_score(y, x, trees);
-            if score > max {
-                max = score;
-            }
+            best = usize::max(best, outlook_score(y, x, trees));
         }
     }
-    return max;
+    return best;
 }
 
 fn main() -> Result<(), Error> {
     let mut input: String = String::new();
-    io::stdin().read_to_string(&mut input).unwrap();
+    io::stdin().read_to_string(&mut input)?;
+    let trees: Vec<Vec<u32>> = parse(&input);
+    writeln!(io::stdout(), "p1: {}", visible_from_perimiter(&trees))?;
+    writeln!(io::stdout(), "p2: {}", best_outlook_tree(&trees))?;
+    Ok(())
+}
 
-    let trees: Vec<Vec<u32>> = input
+fn parse(input: &str) -> Vec<Vec<u32>> {
+    return input
         .trim()
         .split("\n")
         .map(|l| {
@@ -109,8 +105,25 @@ fn main() -> Result<(), Error> {
                 .collect();
         })
         .collect();
+}
 
-    writeln!(io::stdout(), "p1: {}", visible_from_perimiter(&trees)).unwrap();
-    writeln!(io::stdout(), "p2: {}", best_outlook_tree(&trees)).unwrap();
-    Ok(())
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const EXAMPLE: &str = "\
+30373
+25512
+65332
+33549
+35390";
+    #[test]
+    fn test_part1() {
+        assert_eq!(visible_from_perimiter(&parse(EXAMPLE)), 21);
+    }
+
+    #[test]
+    fn test_part2() {
+        assert_eq!(best_outlook_tree(&parse(EXAMPLE)), 8);
+    }
 }

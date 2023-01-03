@@ -1,8 +1,8 @@
 use std::collections::{HashSet, VecDeque};
 use std::io::{self, Error, Read, Write};
 
-fn neighbors((x, y, z): (i32, i32, i32)) -> Vec<(i32, i32, i32)> {
-    return vec![
+fn neighbors((x, y, z): (i32, i32, i32)) -> [(i32, i32, i32); 6] {
+    return [
         (x + 1, y, z),
         (x, y + 1, z),
         (x, y, z + 1),
@@ -62,9 +62,15 @@ fn extern_sides(points: &Vec<(i32, i32, i32)>) -> usize {
 
 fn main() -> Result<(), Error> {
     let mut input: String = String::new();
-    io::stdin().read_to_string(&mut input).unwrap();
+    io::stdin().read_to_string(&mut input)?;
+    let droplets: Vec<(i32, i32, i32)> = parse(&input);
+    writeln!(io::stdout(), "p1: {}", all_sides(&droplets))?;
+    writeln!(io::stdout(), "p2: {}", extern_sides(&droplets))?;
+    Ok(())
+}
 
-    let droplets: Vec<(i32, i32, i32)> = input
+fn parse(input: &str) -> Vec<(i32, i32, i32)> {
+    return input
         .trim()
         .split('\n')
         .map(|line| {
@@ -76,8 +82,33 @@ fn main() -> Result<(), Error> {
             );
         })
         .collect();
+}
 
-    writeln!(io::stdout(), "p1: {}", all_sides(&droplets)).unwrap();
-    writeln!(io::stdout(), "p2: {}", extern_sides(&droplets)).unwrap();
-    Ok(())
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const EXAMPLE: &str = "\
+2,2,2
+1,2,2
+3,2,2
+2,1,2
+2,3,2
+2,2,1
+2,2,3
+2,2,4
+2,2,6
+1,2,5
+3,2,5
+2,1,5
+2,3,5";
+    #[test]
+    fn test_part1() {
+        assert_eq!(all_sides(&parse(EXAMPLE)), 64);
+    }
+
+    #[test]
+    fn test_part2() {
+        assert_eq!(extern_sides(&parse(EXAMPLE)), 58);
+    }
 }

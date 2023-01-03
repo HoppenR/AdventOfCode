@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::io::{self, Error, Read, Write};
 
-fn total_folder_sizes(lines: &Vec<String>) -> HashMap<String, usize> {
+fn total_folder_sizes(lines: &Vec<&str>) -> HashMap<String, usize> {
     let mut total_sizes: HashMap<String, usize> = HashMap::new();
     let mut path: String = String::new();
     for line in lines {
@@ -43,14 +43,14 @@ fn parent_folders(parent_string: &String) -> Vec<String> {
     return parents;
 }
 
-fn filter_sum_dir_tree(lines: &Vec<String>) -> usize {
+fn filter_sum_dir_tree(lines: &Vec<&str>) -> usize {
     return total_folder_sizes(lines)
         .into_values()
         .filter(|&size| size <= 100000)
         .sum();
 }
 
-fn smallest_required_deletion(lines: &Vec<String>) -> usize {
+fn smallest_deletion(lines: &Vec<&str>) -> usize {
     let folder_sizes: HashMap<String, usize> = total_folder_sizes(lines);
     let free_space: usize = 70000000 - folder_sizes[&"".to_string()];
     return folder_sizes
@@ -62,11 +62,52 @@ fn smallest_required_deletion(lines: &Vec<String>) -> usize {
 
 fn main() -> Result<(), Error> {
     let mut input: String = String::new();
-    io::stdin().read_to_string(&mut input).unwrap();
-
-    let lines: Vec<String> = input.lines().map(String::from).collect();
-
-    writeln!(io::stdout(), "p1: {}", filter_sum_dir_tree(&lines)).unwrap();
-    writeln!(io::stdout(), "p2: {}", smallest_required_deletion(&lines)).unwrap();
+    io::stdin().read_to_string(&mut input)?;
+    let lines: Vec<&str> = parse(&input);
+    writeln!(io::stdout(), "p1: {}", filter_sum_dir_tree(&lines))?;
+    writeln!(io::stdout(), "p2: {}", smallest_deletion(&lines))?;
     Ok(())
+}
+
+fn parse(input: &str) -> Vec<&str> {
+    return input.lines().collect();
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const EXAMPLE: &str = "\
+$ cd /
+$ ls
+dir a
+14848514 b.txt
+8504156 c.dat
+dir d
+$ cd a
+$ ls
+dir e
+29116 f
+2557 g
+62596 h.lst
+$ cd e
+$ ls
+584 i
+$ cd ..
+$ cd ..
+$ cd d
+$ ls
+4060174 j
+8033020 d.log
+5626152 d.ext
+7214296 k";
+    #[test]
+    fn test_part1() {
+        assert_eq!(filter_sum_dir_tree(&parse(EXAMPLE)), 95437);
+    }
+
+    #[test]
+    fn test_part2() {
+        assert_eq!(smallest_deletion(&parse(EXAMPLE)), 24933642);
+    }
 }

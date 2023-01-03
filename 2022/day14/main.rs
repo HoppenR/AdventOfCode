@@ -2,7 +2,7 @@ use std::cmp::{max, min};
 use std::collections::HashSet;
 use std::io::{self, Error, Read, Write};
 
-#[derive(Hash, Eq, PartialEq, Clone, Copy)]
+#[derive(Hash, Eq, PartialEq, Clone)]
 struct Point {
     x: u32,
     y: u32,
@@ -32,7 +32,7 @@ fn construct_map(input: &Vec<Vec<Point>>) -> HashSet<Point> {
 //  1 = added
 fn iterate_sand(map: &mut HashSet<Point>, sand: &mut Point, maxy: u32, floor: bool) -> i32 {
     if floor && sand.y == maxy + 1 {
-        map.insert(*sand);
+        map.insert(sand.clone());
         return 1;
     } else if !floor && sand.y == maxy {
         return -1;
@@ -52,7 +52,7 @@ fn iterate_sand(map: &mut HashSet<Point>, sand: &mut Point, maxy: u32, floor: bo
             *sand = check;
             return 0;
         }
-        if map.insert(*sand) {
+        if map.insert(sand.clone()) {
             return 1;
         } else {
             return -1;
@@ -62,29 +62,34 @@ fn iterate_sand(map: &mut HashSet<Point>, sand: &mut Point, maxy: u32, floor: bo
     return 0;
 }
 
-fn drop_sand(old_map: &HashSet<Point>, floor: bool) -> usize {
-    let drop_point = Point { x: 500, y: 0 };
-    let mut map: HashSet<Point> = old_map.clone();
-
+fn drop_sand(instructions: &Vec<Vec<Point>>, floor: bool) -> usize {
+    let mut map = construct_map(instructions);
+    let stone_count = map.len();
     let maxy = map.iter().max_by(|lhs, rhs| lhs.y.cmp(&rhs.y)).unwrap().y;
 
-    let mut sand = drop_point;
+    let mut sand = Point { x: 500, y: 0 };
     loop {
         match iterate_sand(&mut map, &mut sand, maxy, floor) {
             0 => continue,
-            1 => sand = drop_point,
+            1 => sand = Point { x: 500, y: 0 },
             -1 => break,
             _ => unreachable!(),
         }
     }
-    return map.len() - old_map.len();
+    return map.len() - stone_count;
 }
 
 fn main() -> Result<(), Error> {
     let mut input: String = String::new();
-    io::stdin().read_to_string(&mut input).unwrap();
+    io::stdin().read_to_string(&mut input)?;
+    let map: Vec<Vec<Point>> = parse(&input);
+    writeln!(io::stdout(), "p1: {}", drop_sand(&map, false))?;
+    writeln!(io::stdout(), "p2: {}", drop_sand(&map, true))?;
+    Ok(())
+}
 
-    let instructions: Vec<Vec<Point>> = input
+fn parse(input: &str) -> Vec<Vec<Point>> {
+    return input
         .lines()
         .map(|l| {
             l.split(" -> ")
@@ -98,10 +103,22 @@ fn main() -> Result<(), Error> {
                 .collect()
         })
         .collect();
+}
 
-    let map: HashSet<Point> = construct_map(&instructions);
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-    writeln!(io::stdout(), "p1: {}", drop_sand(&map, false)).unwrap();
-    writeln!(io::stdout(), "p2: {}", drop_sand(&map, true)).unwrap();
-    Ok(())
+    const EXAMPLE: &str = "\
+498,4 -> 498,6 -> 496,6
+503,4 -> 502,4 -> 502,9 -> 494,9";
+    #[test]
+    fn test_part1() {
+        assert_eq!(drop_sand(&parse(EXAMPLE), false), 24);
+    }
+
+    #[test]
+    fn test_part2() {
+        assert_eq!(drop_sand(&parse(EXAMPLE), true), 93);
+    }
 }
