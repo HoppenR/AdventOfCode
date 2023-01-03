@@ -66,9 +66,15 @@ fn n_unique_nth_tail_pos(moves: &Vec<(char, i32)>, nth_tail: usize) -> usize {
 
 fn main() -> Result<(), Error> {
     let mut input: String = String::new();
-    io::stdin().read_to_string(&mut input).unwrap();
+    io::stdin().read_to_string(&mut input)?;
+    let moves: Vec<(char, i32)> = parse(&input);
+    writeln!(io::stdout(), "p1: {}", n_unique_nth_tail_pos(&moves, 1))?;
+    writeln!(io::stdout(), "p2: {}", n_unique_nth_tail_pos(&moves, 9))?;
+    Ok(())
+}
 
-    let moves: Vec<(char, i32)> = input
+fn parse(input: &str) -> Vec<(char, i32)> {
+    return input
         .trim()
         .split("\n")
         .map(|l| {
@@ -80,8 +86,40 @@ fn main() -> Result<(), Error> {
                 .unwrap();
         })
         .collect();
+}
 
-    writeln!(io::stdout(), "p1: {}", n_unique_nth_tail_pos(&moves, 1)).unwrap();
-    writeln!(io::stdout(), "p2: {}", n_unique_nth_tail_pos(&moves, 9)).unwrap();
-    Ok(())
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const EXAMPLES: [&str; 2] = [
+        "\
+R 4
+U 4
+L 3
+D 1
+R 4
+D 1
+L 5
+R 2",
+        "\
+R 5
+U 8
+L 8
+D 3
+R 17
+D 10
+L 25
+U 20",
+    ];
+    #[test]
+    fn test_part1() {
+        assert_eq!(n_unique_nth_tail_pos(&parse(EXAMPLES[0]), 1), 13);
+    }
+
+    #[test]
+    fn test_part2() {
+        assert_eq!(n_unique_nth_tail_pos(&parse(EXAMPLES[0]), 9), 1);
+        assert_eq!(n_unique_nth_tail_pos(&parse(EXAMPLES[1]), 9), 36);
+    }
 }

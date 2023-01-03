@@ -89,9 +89,15 @@ fn parse_root_packet(ch_iter: &mut Chars) -> Packet {
 
 fn main() -> Result<(), Error> {
     let mut input: String = String::new();
-    io::stdin().read_to_string(&mut input).unwrap();
+    io::stdin().read_to_string(&mut input)?;
+    let packets: Vec<Packet> = parse(&input);
+    writeln!(io::stdout(), "p1: {}", sorted_packets(&packets))?;
+    writeln!(io::stdout(), "p2: {}", decoder_key(&packets))?;
+    Ok(())
+}
 
-    let packets: Vec<Packet> = input
+fn parse(input: &str) -> Vec<Packet> {
+    return input
         .split("\n\n")
         .flat_map(|pair| {
             return pair.trim().split("\n").map(|l| {
@@ -99,8 +105,43 @@ fn main() -> Result<(), Error> {
             });
         })
         .collect();
+}
 
-    writeln!(io::stdout(), "p1: {}", sorted_packets(&packets)).unwrap();
-    writeln!(io::stdout(), "p2: {}", decoder_key(&packets)).unwrap();
-    Ok(())
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const EXAMPLE: &str = "\
+[1,1,3,1,1]
+[1,1,5,1,1]
+
+[[1],[2,3,4]]
+[[1],4]
+
+[9]
+[[8,7,6]]
+
+[[4,4],4,4]
+[[4,4],4,4,4]
+
+[7,7,7,7]
+[7,7,7]
+
+[]
+[3]
+
+[[[]]]
+[[]]
+
+[1,[2,[3,[4,[5,6,7]]]],8,9]
+[1,[2,[3,[4,[5,6,0]]]],8,9]";
+    #[test]
+    fn test_part1() {
+        assert_eq!(sorted_packets(&parse(EXAMPLE)), 13);
+    }
+
+    #[test]
+    fn test_part2() {
+        assert_eq!(decoder_key(&parse(EXAMPLE)), 140);
+    }
 }

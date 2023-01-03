@@ -76,7 +76,7 @@ fn insert_shape(shape: &str, board: &mut HashSet<(usize, usize)>, posx: usize, p
     }
 }
 
-fn ffw_tetris(dirs: &Vec<Direction>, max_rocks: usize) -> usize {
+fn tetris(dirs: &Vec<Direction>, max_rocks: usize) -> usize {
     let shapes: [&str; 5] = [
         "####",
         ".#.\n###\n.#.",
@@ -129,9 +129,15 @@ fn ffw_tetris(dirs: &Vec<Direction>, max_rocks: usize) -> usize {
 
 fn main() -> Result<(), Error> {
     let mut input: String = String::new();
-    io::stdin().read_to_string(&mut input).unwrap();
+    io::stdin().read_to_string(&mut input)?;
+    let dirs: Vec<Direction> = parse(&input);
+    writeln!(io::stdout(), "p1: {}", tetris(&dirs, 2022))?;
+    writeln!(io::stdout(), "p2: {}", tetris(&dirs, 1000000000000))?;
+    Ok(())
+}
 
-    let dirs: Vec<Direction> = input
+fn parse(input: &str) -> Vec<Direction> {
+    return input
         .trim()
         .chars()
         .filter_map(|c| match c {
@@ -140,8 +146,20 @@ fn main() -> Result<(), Error> {
             _ => return None,
         })
         .collect();
+}
 
-    writeln!(io::stdout(), "p1: {}", ffw_tetris(&dirs, 2022)).unwrap();
-    writeln!(io::stdout(), "p2: {}", ffw_tetris(&dirs, 1000000000000)).unwrap();
-    Ok(())
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const EXAMPLE: &str = ">>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>";
+    #[test]
+    fn test_part1() {
+        assert_eq!(tetris(&parse(EXAMPLE), 2022), 3068);
+    }
+
+    #[test]
+    fn test_part2() {
+        assert_eq!(tetris(&parse(EXAMPLE), 1000000000000), 1514285714288);
+    }
 }

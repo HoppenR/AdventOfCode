@@ -52,11 +52,35 @@ fn badge_priority_sum(rucksacks: &Vec<&str>) -> u32 {
 
 fn main() -> Result<(), Error> {
     let mut input: String = String::new();
-    io::stdin().read_to_string(&mut input).unwrap();
-
-    let rucksacks: Vec<&str> = input.trim().split("\n").collect();
-
-    writeln!(io::stdout(), "p1: {}", item_priority_sum(&rucksacks)).unwrap();
-    writeln!(io::stdout(), "p2: {}", badge_priority_sum(&rucksacks)).unwrap();
+    io::stdin().read_to_string(&mut input)?;
+    let rucksacks: Vec<&str> = parse(&input);
+    writeln!(io::stdout(), "p1: {}", item_priority_sum(&rucksacks))?;
+    writeln!(io::stdout(), "p2: {}", badge_priority_sum(&rucksacks))?;
     Ok(())
+}
+
+fn parse(input: &str) -> Vec<&str> {
+    return input.trim().split("\n").collect();
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const EXAMPLE: &str = "\
+vJrwpWtwJgWrhcsFMMfFFhFp
+jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
+PmmdzqPrVvPwwTWBwg
+wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
+ttgJtRGJQctTZtZT
+CrZsJsPPZsGzwwsLwLmpwMDw";
+    #[test]
+    fn test_part1() {
+        assert_eq!(item_priority_sum(&parse(EXAMPLE)), 157);
+    }
+
+    #[test]
+    fn test_part2() {
+        assert_eq!(badge_priority_sum(&parse(EXAMPLE)), 70);
+    }
 }

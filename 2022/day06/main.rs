@@ -1,25 +1,55 @@
 use std::collections::HashSet;
 use std::io::{self, Error, Read, Write};
-use std::iter::FromIterator;
 
-fn n_first_unique_at(data: &String, unique_len: usize) -> usize {
-    for startpos in 0..data.len() - unique_len {
-        let data_span = data.chars().skip(startpos).take(unique_len);
-        let unique_data: HashSet<char> = HashSet::from_iter(data_span);
-        if unique_data.len() == unique_len {
-            return startpos + unique_len;
-        }
-    }
-    return 0;
+fn unique_span(data: &str, unique_len: usize) -> usize {
+    return data
+        .as_bytes()
+        .windows(unique_len)
+        .position(|data_span| {
+            return data_span.iter().collect::<HashSet<&u8>>().len() == unique_len;
+        })
+        .unwrap()
+        + unique_len;
 }
 
 fn main() -> Result<(), Error> {
     let mut input: String = String::new();
-    io::stdin().read_to_string(&mut input).unwrap();
-
-    input.pop(); // Remove '\n'
-
-    writeln!(io::stdout(), "p1: {}", n_first_unique_at(&input, 4)).unwrap();
-    writeln!(io::stdout(), "p2: {}", n_first_unique_at(&input, 14)).unwrap();
+    io::stdin().read_to_string(&mut input)?;
+    writeln!(io::stdout(), "p1: {}", unique_span(parse(&input), 4))?;
+    writeln!(io::stdout(), "p2: {}", unique_span(parse(&input), 14))?;
     Ok(())
+}
+
+fn parse(input: &str) -> &str {
+    return input.trim();
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const EXAMPLES: [&str; 5] = [
+        "mjqjpqmgbljsphdztnvjfqwrcgsmlb",
+        "bvwbjplbgvbhsrlpgdmjqwftvncz",
+        "nppdvjthqldpwncqszvftbrmjlhg",
+        "nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg",
+        "zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw",
+    ];
+    #[test]
+    fn test_part1() {
+        assert_eq!(unique_span(parse(EXAMPLES[0]), 4), 7);
+        assert_eq!(unique_span(parse(EXAMPLES[1]), 4), 5);
+        assert_eq!(unique_span(parse(EXAMPLES[2]), 4), 6);
+        assert_eq!(unique_span(parse(EXAMPLES[3]), 4), 10);
+        assert_eq!(unique_span(parse(EXAMPLES[4]), 4), 11);
+    }
+
+    #[test]
+    fn test_part2() {
+        assert_eq!(unique_span(parse(EXAMPLES[0]), 14), 19);
+        assert_eq!(unique_span(parse(EXAMPLES[1]), 14), 23);
+        assert_eq!(unique_span(parse(EXAMPLES[2]), 14), 23);
+        assert_eq!(unique_span(parse(EXAMPLES[3]), 14), 29);
+        assert_eq!(unique_span(parse(EXAMPLES[4]), 14), 26);
+    }
 }
