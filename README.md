@@ -1,7 +1,7 @@
 # Overview
 
 <img src="goldstar.png" width=16 height=16> = 2 stars
-<img src="silverstar.png" width=16 height=16> = 1 star 
+<img src="silverstar.png" width=16 height=16> = 1 star
 
 Clicking a star takes you to the solution
 
@@ -112,7 +112,7 @@ Clicking a star takes you to the solution
   <td><a href=2020/day09><img src="goldstar.png" width=16 height=16></a></td>
   <td><a href=2019/day09><img src="goldstar.png" width=16 height=16></a></td>
   <td><a href=2018/day09><img src="goldstar.png" width=16 height=16></a></td>
-  <td></td>
+  <td><a href=2017/day09><img src="goldstar.png" width=16 height=16></a></td>
   <td></td>
   <td></td>
  </tr>
