@@ -1,6 +1,7 @@
 from argparse import ArgumentParser
 from typing import List, Dict
 
+
 def redist_cycles(mem_banks: List[int], debug_mode: int) -> int:
     seen: Dict[str, int] = {}
     i: int = 0
@@ -21,15 +22,19 @@ def redist_cycles(mem_banks: List[int], debug_mode: int) -> int:
             block_amount -= 1
         i += 1
 
+
 def main() -> int:
     parser = ArgumentParser()
     parser.add_argument('file')
     args = parser.parse_args()
     with open(args.file, encoding='utf-8') as f:
-        mem_banks: List[int] = [int(digit) for digit in f.readline().strip().split('\t')]
+        mem_banks: List[int] = [
+            int(digit) for digit in f.readline().strip().split('\t')
+        ]
         print(redist_cycles(mem_banks, 1))
         print(redist_cycles(mem_banks, 2))
     return 0
+
 
 if __name__ == '__main__':
     exit(main())

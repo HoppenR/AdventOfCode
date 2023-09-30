@@ -2,12 +2,14 @@ from argparse import ArgumentParser
 from typing import List
 from enum import Enum
 
+
 class Token(Enum):
     BRACE = 0
     BRACE_END = 1
     GARBAGE = 2
     GARBAGE_END = 3
     IGNORE = 4
+
 
 def count_indents(tokens: List[Token]) -> int:
     score: int = 0
@@ -20,6 +22,7 @@ def count_indents(tokens: List[Token]) -> int:
             level -= 1
     return score
 
+
 def count_garbage(groups: List[Token]) -> int:
     score: int = 0
     for grp in groups:
@@ -28,6 +31,7 @@ def count_garbage(groups: List[Token]) -> int:
         elif grp == Token.GARBAGE_END:
             score -= 1
     return score
+
 
 def parse_tokens(line: str) -> List[Token]:
     token_stack: List[Token] = list()
@@ -52,6 +56,7 @@ def parse_tokens(line: str) -> List[Token]:
             token_stack.append(Token.IGNORE)
     return token_stack
 
+
 def main() -> int:
     parser = ArgumentParser()
     parser.add_argument('file')
@@ -62,6 +67,7 @@ def main() -> int:
     print(count_indents(tokens))
     print(count_garbage(tokens))
     return 0
+
 
 if __name__ == '__main__':
     exit(main())

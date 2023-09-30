@@ -1,6 +1,24 @@
 from argparse import ArgumentParser
 from typing import Tuple, Dict, List
 
+directions: List[Tuple[int, int]] = [
+    (1, 0),
+    (0, 1),
+    (-1, 0),
+    (0, -1)
+]
+comparisons: List[Tuple[int, int]] = [
+    (1, 0),
+    (0, 1),
+    (-1, 0),
+    (0, -1),
+    (1, 1),
+    (1, -1),
+    (-1, 1),
+    (-1, -1)
+]
+
+
 def spiral(i: int) -> int:
     hor: bool = True
     lineLen: int = 0
@@ -13,9 +31,8 @@ def spiral(i: int) -> int:
     disty: int = lineLen // 2
     return abs(distx) + abs(disty)
 
+
 def stress_test(i: int) -> int:
-    directions: List[Tuple[int, int]] = [(1, 0), (0, 1), (-1, 0), (0, -1)]
-    comparisons: List[Tuple[int, int]] = [(1, 0), (0, 1), (-1, 0), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1)]
     values: Dict[Tuple[int, int], int] = {(0, 0): 1}
     position: Tuple[int, int] = (0, 0)
     hor: bool = True
@@ -39,8 +56,10 @@ def stress_test(i: int) -> int:
         hor = not hor
     return posVal
 
+
 def pos_sum(t1: Tuple[int, int], t2: Tuple[int, int]) -> Tuple[int, int]:
     return (sum(i[0] for i in [t1, t2]), sum(i[1] for i in [t1, t2]))
+
 
 def main() -> int:
     parser = ArgumentParser()
@@ -51,6 +70,7 @@ def main() -> int:
         print(spiral(digit))
         print(stress_test(digit))
     return 0
+
 
 if __name__ == '__main__':
     exit(main())
