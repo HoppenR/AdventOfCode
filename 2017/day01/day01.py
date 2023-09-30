@@ -1,8 +1,12 @@
 from argparse import ArgumentParser
 from typing import List
 
+
 def count_sequence(digs: List[int], offset: int) -> int:
-    return sum(s for i, s in enumerate(digs) if s == digs[(i+offset)%len(digs)])
+    return sum(
+        s for i, s in enumerate(digs) if s == digs[(i+offset) % len(digs)]
+    )
+
 
 def main() -> int:
     parser = ArgumentParser()
@@ -13,6 +17,7 @@ def main() -> int:
         print(count_sequence(digits, 1))
         print(count_sequence(digits, len(digits)//2))
     return 0
+
 
 if __name__ == '__main__':
     exit(main())

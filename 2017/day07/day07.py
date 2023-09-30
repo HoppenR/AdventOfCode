@@ -1,12 +1,15 @@
 from argparse import ArgumentParser
 from typing import Dict, List, Tuple
 
+
 class Disc:
     name: str
     weight: int
     dependencies: List[str]
+
     def __init__(self):
         self.dependencies = []
+
 
 def delve(discname: str, discs: Dict[str, Disc]) -> Tuple[int, bool]:
     disc: Disc = discs[discname]
@@ -25,9 +28,11 @@ def delve(discname: str, discs: Dict[str, Disc]) -> Tuple[int, bool]:
                 return (discs[name].weight - diff, True)
     return sum(weights.values()) + disc.weight, False
 
+
 def find_unbalance(discs: Dict[str, Disc]) -> int:
     needed, _ = delve(find_top_node(discs), discs)
     return needed
+
 
 def find_top_node(discs: Dict[str, Disc]) -> str:
     needed: Dict[str, bool] = {d.name: False for d in discs.values()}
@@ -37,7 +42,7 @@ def find_top_node(discs: Dict[str, Disc]) -> str:
     for k, v in needed.items():
         if not v:
             return k
-    assert(False)
+    assert False
 
 
 def main() -> int:
@@ -60,6 +65,7 @@ def main() -> int:
         print(find_top_node(discs))
         print(find_unbalance(discs))
     return 0
+
 
 if __name__ == '__main__':
     exit(main())
