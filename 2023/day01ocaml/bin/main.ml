@@ -25,10 +25,10 @@ let filter_num (digit : cal_dig) (extnum : bool) : int option =
 ;;
 
 let sum_digit_line (lines : cal_dig list list) (extnum : bool) : int =
-    List.fold_left (fun l_acc digits ->
-        let fmt_hd_tl s = sprintf "%d%d" (List.hd s) (List.rev s |> List.hd) in
-        let remaining = List.filter_map (fun x -> filter_num x extnum) digits in
-        l_acc + int_of_string (fmt_hd_tl remaining)
+    List.fold_left (fun acc digits ->
+        let fmt_hd_tl l = sprintf "%d%d" (List.hd l) (List.rev l |> List.hd) in
+        let remaining = List.filter_map (fun d -> filter_num d extnum) digits in
+        acc + int_of_string (fmt_hd_tl remaining)
     ) 0 lines
 ;;
 
@@ -52,11 +52,10 @@ let parse (input : string) : cal_dig list =
 
 let main () : int =
     let rec read_lines acc =
-        try read_lines (read_line ()  :: acc)
+        try read_lines (read_line () :: acc)
         with End_of_file -> List.rev acc
     in
-    let lines = read_lines [] in
-    let parsed_lines = List.map (fun line -> trim line |> parse) lines in
+    let parsed_lines = read_lines [] |> List.map parse in
     printf "p1: %d\n" @@ sum_digit_line parsed_lines false;
     printf "p2: %d\n" @@ sum_digit_line parsed_lines true;
     0
