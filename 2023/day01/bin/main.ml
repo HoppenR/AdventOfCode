@@ -19,16 +19,16 @@ let written_nums: (string * int) array = [|
 
 let filter_num (digit : cal_dig) (extnum : bool) : int option =
     match (digit, extnum) with
-    | (Literal v), _ -> Some v
-    | (Spelled v), true -> Some v
+    | (Literal v, _) -> Some v
+    | (Spelled v, true) -> Some v
     | _ -> None
 ;;
 
 let sum_digit_line (lines : cal_dig list list) (extnum : bool) : int =
     List.fold_left (fun acc digits ->
-        let fmt_hd_tl l = sprintf "%d%d" (List.hd l) (List.rev l |> List.hd) in
+        let concat_hd_tl lst = (List.hd lst) * 10 + (List.rev lst |> List.hd) in
         let remaining = List.filter_map (fun d -> filter_num d extnum) digits in
-        acc + int_of_string (fmt_hd_tl remaining)
+        acc + concat_hd_tl remaining
     ) 0 lines
 ;;
 
