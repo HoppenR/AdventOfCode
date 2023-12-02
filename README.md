@@ -32,7 +32,7 @@ Clicking a star takes you to the solution
  </tr>
  <tr>
   <td>2</td>
-  <td></td>
+  <td><a href=2023/day02><img src="goldstar.png" width=16 height=16></a></td>
   <td><a href=2022/day02><img src="goldstar.png" width=16 height=16></a></td>
   <td><a href=2021/day02><img src="goldstar.png" width=16 height=16></a></td>
   <td><a href=2020/day02><img src="goldstar.png" width=16 height=16></a></td>
