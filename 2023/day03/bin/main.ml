@@ -1,56 +1,75 @@
 open String
 open Printf
 
-type point = {x : int; y : int}
-
-type _number = {n : int; p : point; len : int }
-type _symbol = {c : char; p : point }
+type _point = {x : int; y : int}
+type _number = {n : int; p : _point; len : int }
+type _symbol = {c : char; p : _point }
 
 type token =
     | Symbol of _symbol
     | Number of _number
 
-let rec is_adjacent_symbol (num : _number) (tokens : token list) : bool =
-    match tokens with
-    | [] -> false
-    | Symbol sym :: rest ->
-        if let rec check_distance i =
-            if i = num.len then
-                false
-            else if abs (sym.p.x - num.p.x - i) <= 1 && abs (sym.p.y - num.p.y) <= 1 then
-                true
-            else
-                check_distance (i + 1)
-            in
-            check_distance 0
-        then true
-        else is_adjacent_symbol num rest
-    | Number _ :: rest -> is_adjacent_symbol num rest
+let distance_one_off (num : _number) (sym : _symbol) =
+    let rec loop i =
+        if i = num.len then false
+        else if abs (sym.p.x - num.p.x - i) <= 1 && abs (sym.p.y - num.p.y) <= 1 then true
+        else loop (i + 1)
+    in
+    loop 0
+;;
+
+let has_adjacent_symbol (num : _number) (tokens : token list) : bool =
+    List.exists (
+        function
+        | Symbol sym -> distance_one_off num sym
+        | _ -> false
+    ) tokens
 ;;
 
 let sum_partials (tokens : token list) : int =
     List.fold_left (fun acc ->
         function
-        | Number num when is_adjacent_symbol num tokens -> acc + num.n
+        | Number num when has_adjacent_symbol num tokens -> acc + num.n
+        | _ -> acc
+    ) 0 tokens
+;;
+
+let get_adj_nums (symbol : _symbol) (tokens : token list) : (_number list) =
+    List.filter_map (
+        function
+        | Number num when distance_one_off num symbol -> Some num
+        | _ -> None
+    ) tokens
+;;
+
+let sum_gear_ratios (tokens : token list) : int =
+    List.fold_left (fun acc ->
+        function
+        | Symbol sym when sym.c = '*' -> (
+            match get_adj_nums sym tokens with
+            | n1 :: n2 :: [] -> acc + n1.n * n2.n
+            | _ -> acc
+        )
         | _ -> acc
     ) 0 tokens
 ;;
 
 let parse (y : int) (line : string) : token list =
-    let delimiter_pattern = Str.regexp "[^0-9]" in
-    let rec extract (acc, x) =
+    let rec loop acc x =
         let p = { x; y } in
         function
         | [] -> List.rev acc
         | Str.Delim "." :: rest ->
-            extract (acc, x + 1) rest
-        | Str.Delim pre :: rest ->
-            extract (Symbol {c = (get pre 0); p} :: acc, x + 1) rest
-        | Str.Text n :: rest ->
-            let len = length n in
-            extract (Number {n = (int_of_string n);  p; len} :: acc, x + len) rest
+            loop acc (x + 1) rest
+        | Str.Delim sym :: rest ->
+            let c = get sym 0 in
+            loop (Symbol {c; p} :: acc) (x + 1) rest
+        | Str.Text num :: rest ->
+            let n = int_of_string num in
+            let len = length num in
+            loop (Number {n; p; len} :: acc) (x + len) rest
     in
-    extract ([], 0) (Str.full_split delimiter_pattern line)
+    loop [] 0 (Str.full_split (Str.regexp "[^0-9]") line)
 ;;
 
 let main () : int =
@@ -60,6 +79,7 @@ let main () : int =
     in
     let parsed_lines = read_lines [] |> List.mapi parse |> List.flatten in
     printf "p1: %d\n" @@ sum_partials parsed_lines;
+    printf "p2: %d\n" @@ sum_gear_ratios parsed_lines;
     0
 ;;
 
