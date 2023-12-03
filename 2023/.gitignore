@@ -1,4 +1,2 @@
-target
-Cargo.lock
-main
-!main.rs
+_build
+dune
