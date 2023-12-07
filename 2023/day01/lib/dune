@@ -1,2 +1,5 @@
 (library
- (name day01))
+ (name day01)
+ (libraries base batteries)
+ (inline_tests)
+ (preprocess (pps ppx_inline_test ppx_assert)))
