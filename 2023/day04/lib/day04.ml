@@ -1,26 +1,11 @@
 open Base
 open Batteries
 
-module Set = Set.Make(struct
-    type t = int let compare = compare
-end)
-
-type ticket = {
-    wins : Set.t;
-    scratches : Set.t;
-}
-
-let wins_per_ticket (tickets : ticket list) : int list =
-    List.map (fun ticket ->
-        Set.fold (fun scratch acc ->
-            acc + Bool.to_int (Set.mem scratch ticket.wins)
-        ) ticket.scratches 0
-    ) tickets
-;;
+module IntSet = Set.Int
 
 let sum_winning_tickets (ticket_wins : int list) : int =
     List.fold_left (fun acc wins ->
-        if wins > 0 then acc + 1 lsl (wins - 1)
+        if wins > 0 then acc + (1 lsl (wins - 1))
         else acc
     ) 0 ticket_wins
 ;;
@@ -42,21 +27,23 @@ let num_recurse_tickets (ticket_wins : int list) : int =
     loop 0 0 extras
 ;;
 
-let parse (line : string) : ticket =
+let parse (line : string) : int =
     let parse_ticket_side str =
         Str.full_split (Str.regexp " +") str
         |> List.fold_left (fun ticket_numbers ->
             function
-            | Str.Text num -> Set.add (Int.of_string num) ticket_numbers
+            | Str.Text num -> IntSet.add (Int.of_string num) ticket_numbers
             | _ -> ticket_numbers
-        ) Set.empty
+        ) IntSet.empty
     in
     let strip_label ticket =
         ticket |> String.split_on_char ':' |> List.rev |> List.hd
     in
-    strip_label line |> String.split_on_char '|' |> List.map parse_ticket_side
+    strip_label line
+    |> String.split_on_char '|'
+    |> List.map parse_ticket_side
     |> function
-    | [wins; scratches] -> {wins; scratches}
+    | [wins; scratches] -> IntSet.cardinal (IntSet.inter wins scratches)
     | _ -> failwith "unreachable"
 ;;
 
@@ -70,7 +57,7 @@ let%test_unit "test input" =
         "Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11";
     ]
     in
-    let parsed_lines = input |> List.map parse |> wins_per_ticket in
+    let parsed_lines = input |> List.map parse in
     [%test_eq: int] (sum_winning_tickets parsed_lines) 13;
     [%test_eq: int] (num_recurse_tickets parsed_lines) 30;
 ;;
