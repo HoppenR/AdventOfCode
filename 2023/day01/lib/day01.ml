@@ -1,7 +1,7 @@
 open Base
 open Batteries
 
-type cal_dig =
+type cdigit =
     | Literal of int
     | Spelled of int
 
@@ -17,22 +17,22 @@ let written_nums: (string * int) array = [|
     ("nine", 9);
     |]
 
-let filter_num (digit : cal_dig) (extnum : bool) : int option =
+let filter_num (digit : cdigit) (extnum : bool) : int option =
     match (digit, extnum) with
     | (Literal v, _) -> Some v
     | (Spelled v, true) -> Some v
     | _ -> None
 ;;
 
-let sum_digit_line (lines : cal_dig list list) (extnum : bool) : int =
+let sum_digit_line (lines : cdigit list list) (extnum : bool) : int =
     List.fold_left (fun acc digits ->
-        let concat_hd_tl lst = (List.hd lst) * 10 + (List.rev lst |> List.hd) in
+        let concat_hd_tl lst = (List.first lst) * 10 + (List.last lst) in
         let remaining = List.filter_map (fun d -> filter_num d extnum) digits in
         acc + concat_hd_tl remaining
     ) 0 lines
 ;;
 
-let parse (input : string) : cal_dig list =
+let parse (input : string) : cdigit list =
     let is_digit = function '0' .. '9' -> true | _ -> false in
     List.concat_map (fun line ->
         List.filter_map (fun (offset, cur) ->
@@ -58,8 +58,8 @@ let%test_unit "test input 1" =
         "treb7uchet";
     ]
     in
-    let parsed_lines = input |> List.map parse in
-    [%test_eq: int] (sum_digit_line parsed_lines false) 142;
+    let calibration_digits = input |> List.map parse in
+    [%test_eq: int] (sum_digit_line calibration_digits false) 142;
 ;;
 
 let%test_unit "test input 2" =
@@ -73,6 +73,6 @@ let%test_unit "test input 2" =
         "7pqrstsixteen";
     ]
     in
-    let parsed_lines = input |> List.map parse in
-    [%test_eq: int] (sum_digit_line parsed_lines true) 281;
+    let calibration_digits = input |> List.map parse in
+    [%test_eq: int] (sum_digit_line calibration_digits true) 281;
 ;;

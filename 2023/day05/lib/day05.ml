@@ -134,7 +134,7 @@ let%test_unit "test input" =
         "56 93 4";
     ]
     in
-    let seeds, product_maps = parse input in
-    [%test_eq: int] (lowest_seed_number product_maps seeds) 35;
-    [%test_eq: int] (find_lowest_start (find_output_mappings product_maps seeds)) 46;
+    let seeds, maps = parse input in
+    [%test_eq: int] (lowest_seed_number maps seeds) 35;
+    [%test_eq: int] (find_lowest_start (find_output_mappings maps seeds)) 46;
 ;;

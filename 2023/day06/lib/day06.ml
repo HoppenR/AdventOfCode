@@ -23,8 +23,7 @@ let (parse : string list -> float list * float list) =
     in
     List.map (
         String.split_on_char ':'
-        %> List.rev
-        %> List.hd
+        %> List.last
         %> Str.full_split (Str.regexp "[^0-9]") %> loop []
     ) %> function
     | [limits; records] -> (limits, records)

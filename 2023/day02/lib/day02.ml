@@ -65,7 +65,7 @@ let%test_unit "test input" =
         "Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green";
     ]
     in
-    let parsed_lines = input |> List.map parse in
-    [%test_eq: int] (sum_valid_ids parsed_lines) 8;
-    [%test_eq: int] (sum_power_of_minimum_games parsed_lines) 2286;
+    let games = input |> List.map parse in
+    [%test_eq: int] (sum_valid_ids games) 8;
+    [%test_eq: int] (sum_power_of_minimum_games games) 2286;
 ;;

@@ -2,13 +2,9 @@ open Day04
 open Printf
 
 let main () : int =
-    let rec read_lines acc =
-        try read_lines (read_line () :: acc)
-        with End_of_file -> List.rev acc
-    in
-    let parsed_lines = read_lines [] |> List.map parse in
-    printf "p1: %d\n" @@ sum_winning_tickets parsed_lines;
-    printf "p2: %d\n" @@ num_recurse_tickets parsed_lines;
+    let ticket_wins = In_channel.input_lines stdin |> List.map parse in
+    printf "p1: %d\n" @@ sum_winning_tickets ticket_wins;
+    printf "p2: %d\n" @@ num_recurse_tickets ticket_wins;
     0
 ;;
 
