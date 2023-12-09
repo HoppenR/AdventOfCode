@@ -5,7 +5,7 @@ let rec (pair_differences : int list -> int list) =
     function
     | [] | [_] -> []
     | [hd1; hd2] -> [hd2 - hd1]
-    | hd1 :: (hd2 :: _ as tl) -> hd2 - hd1 :: pair_differences tl
+    | hd1 :: (hd2 :: _ as tl) -> (hd2 - hd1) :: pair_differences tl
 ;;
 
 let rec (sequences : int list -> int list list) =
@@ -14,12 +14,24 @@ let rec (sequences : int list -> int list list) =
     | lst -> lst :: sequences (pair_differences lst)
 ;;
 
-let (extrapolate : int list list -> int) =
-    List.fold_left (fun acc -> List.last %> (+) acc) 0
+let (extrapolate_prev : int list list -> int) =
+    List.fold_left (fun acc sequence -> List.first sequence - acc) 0
 ;;
 
-let (extrapolate_and_sum : int list list -> int) =
-    List.fold_left (fun acc -> sequences %> List.rev %> extrapolate %> (+) acc) 0
+let (extrapolate_next : int list list -> int) =
+    List.fold_left (fun acc sequence -> List.last sequence + acc) 0
+;;
+
+let (sum_prev_extrapolations : int list list -> int) =
+    List.fold_left (fun acc readings ->
+        acc + extrapolate_prev (sequences readings |> List.rev)
+    ) 0
+;;
+
+let (sum_next_extrapolations : int list list -> int) =
+    List.fold_left (fun acc readings ->
+        acc + extrapolate_next (sequences readings)
+    ) 0
 ;;
 
 let (parse : string -> int list) =
@@ -34,5 +46,6 @@ let%test_unit "test input" =
     ]
     in
     let parsed_lines = List.map parse input in
-    [%test_eq: int] (extrapolate_and_sum parsed_lines) 114;
+    [%test_eq: int] (sum_next_extrapolations parsed_lines) 114;
+    [%test_eq: int] (sum_prev_extrapolations parsed_lines) 2;
 ;;

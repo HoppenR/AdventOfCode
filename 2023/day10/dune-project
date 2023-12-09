@@ -1,0 +1,9 @@
+(lang dune 3.12)
+
+(name day10)
+
+(generate_opam_files false)
+
+(package
+  (allow_empty true)
+  (name day10))
