@@ -82,7 +82,7 @@ let%test_unit "test input" =
         "QQQJA 483";
     ]
     in
-    let parsed_lines = List.map parse input in
-    [%test_eq: int] (sum_winnings false parsed_lines) 6440;
-    [%test_eq: int] (sum_winnings true parsed_lines) 5905;
+    let cards_and_bids = List.map parse input in
+    [%test_eq: int] (sum_winnings false cards_and_bids) 6440;
+    [%test_eq: int] (sum_winnings true cards_and_bids) 5905;
 ;;

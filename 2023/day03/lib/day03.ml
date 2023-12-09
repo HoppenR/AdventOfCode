@@ -86,7 +86,7 @@ let%test_unit "test input" =
         ".664.598..";
     ]
     in
-    let parsed_lines = input |> List.mapi parse |> List.flatten in
-    [%test_eq: int] (sum_partials parsed_lines) 4361;
-    [%test_eq: int] (sum_gear_ratios parsed_lines) 467835;
+    let tokens = input |> List.mapi parse |> List.flatten in
+    [%test_eq: int] (sum_partials tokens) 4361;
+    [%test_eq: int] (sum_gear_ratios tokens) 467835;
 ;;

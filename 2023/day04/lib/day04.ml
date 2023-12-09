@@ -36,10 +36,9 @@ let parse (line : string) : int =
             | _ -> ticket_numbers
         ) IntSet.empty
     in
-    let strip_label ticket =
-        ticket |> String.split_on_char ':' |> List.rev |> List.hd
-    in
-    strip_label line
+    line
+    |> String.split_on_char ':'
+    |> List.last
     |> String.split_on_char '|'
     |> List.map parse_ticket_side
     |> function
@@ -57,7 +56,7 @@ let%test_unit "test input" =
         "Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11";
     ]
     in
-    let parsed_lines = input |> List.map parse in
-    [%test_eq: int] (sum_winning_tickets parsed_lines) 13;
-    [%test_eq: int] (num_recurse_tickets parsed_lines) 30;
+    let ticket_wins = input |> List.map parse in
+    [%test_eq: int] (sum_winning_tickets ticket_wins) 13;
+    [%test_eq: int] (num_recurse_tickets ticket_wins) 30;
 ;;

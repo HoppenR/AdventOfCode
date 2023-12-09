@@ -45,7 +45,7 @@ let%test_unit "test input" =
         "10 13 16 21 30 45";
     ]
     in
-    let parsed_lines = List.map parse input in
-    [%test_eq: int] (sum_next_extrapolations parsed_lines) 114;
-    [%test_eq: int] (sum_prev_extrapolations parsed_lines) 2;
+    let start_sequences = List.map parse input in
+    [%test_eq: int] (sum_next_extrapolations start_sequences) 114;
+    [%test_eq: int] (sum_prev_extrapolations start_sequences) 2;
 ;;
