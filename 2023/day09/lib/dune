@@ -2,4 +2,5 @@
  (name day09)
  (libraries base batteries)
  (inline_tests)
- (preprocess (pps ppx_inline_test ppx_assert)))
+ (preprocess
+  (pps ppx_inline_test ppx_assert)))
