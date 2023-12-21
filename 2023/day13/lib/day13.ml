@@ -5,16 +5,35 @@ type pattern =
   | Horizontal of string list
   | Vertical of string list
 
-let (list_part_equal : string list * string list -> bool) =
-  let rec aux found_one_or_more = function
-    | [], _ | _, [] -> found_one_or_more
+let differing_chars (str1 : string) (str2 : string) : int =
+  let rec aux diffs = function
+    | [], [] -> diffs
     | hd1 :: tl1, hd2 :: tl2 ->
-      if String.equal hd1 hd2 then aux true (tl1, tl2) else false
+      if Char.equal hd1 hd2
+      then aux diffs (tl1, tl2)
+      else aux (diffs + 1) (tl1, tl2)
+    | _ -> failwith "unreachable"
   in
-  aux false
+  aux 0 (String.explode str1, String.explode str2)
 ;;
 
-let nlines_before_reflection (lst : string list) : int =
+let folds_equal ~(smudges : int) : string list * string list -> bool =
+  let rec aux (diffs : int) (found_one_or_more : bool) = function
+    | hd1 :: tl1, hd2 :: tl2 ->
+      (match diffs, differing_chars hd1 hd2 with
+       | n, 0 when n <= smudges -> aux diffs true (tl1, tl2)
+       | 0, 1 -> aux 1 true (tl1, tl2)
+       | _ -> false)
+    | _ -> found_one_or_more && Int.equal diffs smudges
+  in
+  aux 0 false
+;;
+
+let reflected_lines_count
+  (comp_fun : string list * string list -> bool)
+  (lst : string list)
+  : int
+  =
   let make_reflections i =
     let a, b = List.split_at i lst in
     List.rev a, b
@@ -22,17 +41,19 @@ let nlines_before_reflection (lst : string list) : int =
   let rec aux i =
     if Int.equal i (List.length lst)
     then 0
-    else if list_part_equal (make_reflections i)
+    else if comp_fun (make_reflections i)
     then i
     else aux (i + 1)
   in
   aux 0
 ;;
 
-let (summarize_patterns : pattern list -> int) =
+let summarize_patterns (comp_fun : string list * string list -> bool)
+  : pattern list -> int
+  =
   List.map (function
-    | Vertical lst -> nlines_before_reflection lst
-    | Horizontal lst -> 100 * nlines_before_reflection lst)
+    | Vertical lst -> 1 * reflected_lines_count comp_fun lst
+    | Horizontal lst -> 100 * reflected_lines_count comp_fun lst)
   %> List.sum
 ;;
 
@@ -75,5 +96,6 @@ let%test_unit "test input" =
     ]
   in
   let patterns = parse input in
-  [%test_eq: int] (summarize_patterns patterns) 405
+  [%test_eq: int] (summarize_patterns (folds_equal ~smudges:0) patterns) 405;
+  [%test_eq: int] (summarize_patterns (folds_equal ~smudges:1) patterns) 400
 ;;
