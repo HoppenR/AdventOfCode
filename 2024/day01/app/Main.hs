@@ -13,9 +13,6 @@ listDist :: [Int] -> [Int] -> Int
 listDist xs ys =
   sum $ zipWith (\x y -> abs (x - y)) xs ys
 
-mapOccurrences :: [Int] -> Map.Map Int Int
-mapOccurrences = foldr (\x acc -> Map.insertWith (+) x 1 acc) Map.empty
-
 parseInput :: String -> [[Int]]
 parseInput input =
   transpose $ map (map read . words) (lines input)
@@ -24,5 +21,5 @@ main :: IO ()
 main = do
   input <- getContents
   let [xs, ys] = map sort $ parseInput input
-  print $ listDist xs ys
-  print $ similarityScore (mapOccurrences ys) xs
+  print $ "p1: " ++ show (listDist xs ys)
+  print $ "p2: " ++ show (similarityScore (Map.fromListWith (+) (zip ys (repeat 1))) xs)
