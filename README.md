@@ -34,7 +34,7 @@ Clicking a star takes you to the solution
  </tr>
  <tr>
   <td>2</td>
-  <td></td>
+  <td><a href=2024/day02><img src="goldstar.png" width=16 height=16></a></td>
   <td><a href=2023/day02><img src="goldstar.png" width=16 height=16></a></td>
   <td><a href=2022/day02><img src="goldstar.png" width=16 height=16></a></td>
   <td><a href=2021/day02><img src="goldstar.png" width=16 height=16></a></td>
@@ -47,7 +47,7 @@ Clicking a star takes you to the solution
  </tr>
  <tr>
   <td>3</td>
-  <td></td>
+  <td><a href=2024/day03><img src="silverstar.png" width=16 height=16></a></td>
   <td><a href=2023/day03><img src="goldstar.png" width=16 height=16></a></td>
   <td><a href=2022/day03><img src="goldstar.png" width=16 height=16></a></td>
   <td><a href=2021/day03><img src="goldstar.png" width=16 height=16></a></td>
