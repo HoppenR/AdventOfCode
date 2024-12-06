@@ -73,7 +73,7 @@ Clicking a star takes you to the solution
  </tr>
  <tr>
   <td>5</td>
-  <td></td>
+  <td><a href=2024/day05><img src="goldstar.png" width=16 height=16></a></td>
   <td><a href=2023/day05><img src="silverstar.png" width=16 height=16></a></td>
   <td><a href=2022/day05><img src="goldstar.png" width=16 height=16></a></td>
   <td><a href=2021/day05><img src="goldstar.png" width=16 height=16></a></td>
