@@ -2,6 +2,8 @@
 module Main where
 
 import Data.Bifunctor (bimap)
+import Data.Graph (graphFromEdges, topSort)
+import Data.List (partition)
 
 validateRule :: [Int] -> (Int, Int) -> Bool
 validateRule [] _ = True
@@ -10,17 +12,21 @@ validateRule (x : xs) rules@(rule1, rule2)
   | x == rule2 = rule1 `notElem` xs
   | otherwise = validateRule xs rules
 
-validateBook :: [Int] -> [(Int, Int)] -> Bool
-validateBook = all . validateRule
+partitionBooks :: [(Int, Int)] -> [[Int]] -> ([[Int]], [[Int]])
+partitionBooks rules = partition (`validBook` rules)
+  where
+    validBook = all . validateRule
 
-validBooks :: [(Int, Int)] -> [[Int]] -> [[Int]]
-validBooks rules = filter (`validateBook` rules)
+sortBook :: [(Int, Int)] -> [Int] -> [Int]
+sortBook rules book =
+  map ((\(_, page, _) -> page) . nodeFromVertex) (topSort graph)
+  where
+    (graph, nodeFromVertex, _) = graphFromEdges edgeList
+    edgeList = [(page, page, successors page) | page <- book]
+    successors page = [p2 | (p1, p2) <- rules, p1 == page]
 
 middleElem :: [a] -> a
 middleElem xs = xs !! (length xs `div` 2)
-
-validMiddlePages :: [(Int, Int)] -> [[Int]] -> [Int]
-validMiddlePages rules = map middleElem . validBooks rules
 
 splitOn :: Eq a => a -> [a] -> [[a]]
 splitOn _ [] = [[]]
@@ -43,4 +49,6 @@ main :: IO ()
 main = do
   input <- getContents
   let (rules, books) = parseInput input
-  print $ "p1: " ++ show (sum (validMiddlePages rules books))
+  let (validBooks, invalidBooks) = partitionBooks rules books
+  print $ "p1: " ++ show (sum (map middleElem validBooks))
+  print $ "p2: " ++ show (sum (map (middleElem . sortBook rules) invalidBooks))
