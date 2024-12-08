@@ -19,8 +19,9 @@ partitionBooks rules = partition (`validBook` rules)
 
 sortBook :: [(Int, Int)] -> [Int] -> [Int]
 sortBook rules book =
-  map ((\(_, page, _) -> page) . nodeFromVertex) (topSort graph)
+  map (pageFromNode . nodeFromVertex) (topSort graph)
   where
+    pageFromNode (_, page, _) = page
     (graph, nodeFromVertex, _) = graphFromEdges edgeList
     edgeList = [(page, page, successors page) | page <- book]
     successors page = [p2 | (p1, p2) <- rules, p1 == page]
