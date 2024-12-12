@@ -125,7 +125,7 @@ Clicking a star takes you to the solution
  </tr>
  <tr>
   <td>9</td>
-  <td></td>
+  <td><a href=2024/day09><img src="silverstar.png" width=16 height=16></a></td>
   <td><a href=2023/day09><img src="goldstar.png" width=16 height=16></a></td>
   <td><a href=2022/day09><img src="goldstar.png" width=16 height=16></a></td>
   <td><a href=2021/day09><img src="goldstar.png" width=16 height=16></a></td>
